@@ -66,29 +66,41 @@ PCB_HOLES = [[-HOLE_DX,-HOLE_DY],[HOLE_DX,-HOLE_DY],[HOLE_DX,HOLE_DY],[-HOLE_DX,
 // ============================================================================
 //  Cuerpo
 // ============================================================================
+// Orientación (vista cenital, componentes hacia la tapa):
+//   +Y (back)  = 4 conectores de motor (X/Y/Z/Extrusor)
+//   +X (right) = mazo VIN + FAN + HE(calefactor) + TH(termistor)
+//   +Y... front (-Y... ojo: port_rect "front" = +Y. Aquí "front" lo uso como
+//   el borde de usuario): microSD + USB-C(PD) + jack DC
+//   -X (left)  = ventilador de refrigeración (sopla a través del PCB)
+// Posiciones (pos, mm desde el centro del borde) medidas por fotogrametría
+// (motores y microSD: confianza alta; USB-C/DC: aprox., afinar con calibre).
 module k10_body() {
-    fan_z   = FLOOR + IH*0.5;          // centro del ventilador (cara frontal +Y)
-    cable_z = PCB_Z + 5;               // altura de salida de los mazos (a nivel de conectores)
+    fan_z   = FLOOR + IH*0.5;          // centro del ventilador (cara izquierda -X)
+    cable_z = PCB_Z + 5;               // altura de salida de los mazos (nivel conectores)
 
     union() {
         difference() {
-            enclosure_body(INNER, wall=WALL, floor=FLOOR, rad=RAD,
-                           pcb_holes=PCB_HOLES, standoff_h=STANDOFF_H,
-                           lid_boss_mode="tap", chamfer_bottom=CHAMFER);
+            union() {
+                // Caja sin standoffs (retención por contorno, no por agujeros)
+                enclosure_body(INNER, wall=WALL, floor=FLOOR, rad=RAD,
+                               pcb_holes=[], standoff_h=STANDOFF_H,
+                               lid_boss_mode="tap", chamfer_bottom=CHAMFER);
+                // Repisa perimetral donde apoya el borde del PCB
+                pcb_ledge(INNER, [PCB_L,PCB_W], FLOOR+STANDOFF_H);
+            }
 
-            // Ventilador de refrigeración en la cara FRONTAL (+Y)
-            translate([0, IW/2+WALL/2, fan_z]) rotate([0,0,180]) fan_cutout(FAN, WALL);
+            // Ventilador de refrigeración en la cara IZQUIERDA (-X)
+            translate([-IL/2-WALL/2, 0, fan_z]) rotate([0,0,90]) fan_cutout(FAN, WALL);
 
-            // --- PUERTOS por borde (TODO-MEDIR pos/altura exactas) ---
-            // TRASERO (-Y): 4 motores en un mazo ancho
-            port_rect(INNER, WALL, "back",  46, 9, pos=0,  zc=cable_z);
-            // IZQUIERDO (-X): jack DC 12V + USB-C
-            port_rect(INNER, WALL, "left",  10, 9, pos=14, zc=cable_z);   // DC barrel
-            port_rect(INNER, WALL, "left",  11, 6, pos=-8, zc=cable_z);   // USB-C
-            // DERECHO (+X): mazo del cabezal (HE + termistor + fan del hotend)
-            port_rect(INNER, WALL, "right", 26, 11, pos=0, zc=cable_z);
-            // FRONTAL (+Y): ranura microSD (baja, a un lado del ventilador)
-            port_rect(INNER, WALL, "front", 14, 3.5, pos=-26, zc=PCB_Z-1);
+            // --- PUERTOS por borde ---
+            // BACK (-Y... port_rect "back"): 4 motores en mazo ancho (x: -27,-11,+2,+16)
+            port_rect(INNER, WALL, "back",  56, 9, pos=-5, zc=cable_z);
+            // RIGHT (+X): mazo del cabezal/potencia VIN+FAN+HE+TH (apilados en Y)
+            port_rect(INNER, WALL, "right", 40, 11, pos=0, zc=cable_z);
+            // FRONT (+Y): microSD + USB-C(PD) + jack DC (cara de usuario)
+            port_rect(INNER, WALL, "front", 14, 3.5, pos=-12, zc=PCB_Z-1);  // microSD
+            port_rect(INNER, WALL, "front", 10, 6,   pos=+6,  zc=cable_z);   // USB-C (PD)
+            port_rect(INNER, WALL, "front", 10, 9,   pos=+22, zc=cable_z);   // jack DC 12V
 
             // --- VENTANA DE ACCESO A BOTONES en el suelo ---
             if (BTN_ACCESS)
@@ -96,8 +108,8 @@ module k10_body() {
                     linear_extrude(FLOOR+2*EPS)
                         offset(r=1) square([BTN_WIN[0]-2, BTN_WIN[1]-2], center=true);
         }
-        // rejilla del ventilador (cara frontal)
-        translate([0, IW/2+WALL/2, fan_z]) rotate([0,0,180]) fan_grille(FAN, WALL);
+        // rejilla del ventilador (cara izquierda)
+        translate([-IL/2-WALL/2, 0, fan_z]) rotate([0,0,90]) fan_grille(FAN, WALL);
 
         // pies opcionales (para alcanzar los botones por debajo)
         if (FEET)
@@ -110,10 +122,17 @@ module k10_body() {
 // ============================================================================
 //  Render
 // ============================================================================
+// Postes de la tapa que presionan el margen del PCB (diagonal, libres de puertos/bosses)
+HOLDDOWN = [[31, -25.75], [-30, 25.75]];
+
 if (part=="body")  k10_body();
-if (part=="lid")   enclosure_lid(INNER, wall=WALL, rad=RAD, thick=2.4, vents=true);
+if (part=="lid")
+    enclosure_lid(INNER, wall=WALL, rad=RAD, thick=2.4, vents=true,
+                  holddown=HOLDDOWN, holddown_depth=COMP_H);
 if (part=="assembly") {
     k10_body();
     color("LightSteelBlue", 0.85)
-        translate([0,0, FLOOR+IH+2.4 + 12]) enclosure_lid(INNER, wall=WALL, rad=RAD, thick=2.4, vents=true);
+        translate([0,0, FLOOR+IH+2.4 + 12])
+            enclosure_lid(INNER, wall=WALL, rad=RAD, thick=2.4, vents=true,
+                          holddown=HOLDDOWN, holddown_depth=COMP_H);
 }

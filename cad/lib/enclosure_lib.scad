@@ -133,6 +133,28 @@ module pcb_standoff(h, od=5, hole=M3_TAP) {
 }
 
 // ============================================================================
+//  Retención del PCB por CONTORNO (sin depender de los agujeros)
+//   - pcb_ledge: repisa perimetral donde apoya el borde del PCB (apoyo inferior)
+//   - lid_holddown: postes en la tapa que presionan el margen del PCB (sujeción
+//     superior). Se colocan en el margen libre de componentes (bordes del PCB).
+// ============================================================================
+module pcb_ledge(inner, pcb, rest_h, ledge_t=2, overlap=1.5, embed=1.2) {
+    il=inner[0]; iw=inner[1];
+    translate([0,0,rest_h-ledge_t])
+        linear_extrude(ledge_t)
+            difference() {
+                square([il+2*embed, iw+2*embed], center=true);   // embebe en la pared
+                square([pcb[0]-2*overlap, pcb[1]-2*overlap], center=true);
+            }
+}
+// Postes de sujeción colgando de la cara inferior de la tapa (z=0 hacia -z)
+module lid_holddown(positions, depth, size=5) {
+    for (p=positions)
+        translate([p[0], p[1], -depth])
+            linear_extrude(depth+EPS) square([size,size], center=true);
+}
+
+// ============================================================================
 //  CAJA (body): paredes + suelo + bosses de tapa + standoffs de PCB
 //  Parámetros:
 //   inner = [il, iw, ih]  espacio interior libre (alto = sobre el suelo)
@@ -189,7 +211,8 @@ function corner_boss_xy(inner, boss_inset=0) =
 //  TAPA (lid): placa con agujeros de tornillo M3 (avellanados) + labio interior
 // ============================================================================
 module enclosure_lid(inner, wall=2.4, rad=3, thick=2.4, boss_inset=0,
-                     lip=true, lip_h=3, fan=0, vents=false) {
+                     lip=true, lip_h=3, fan=0, vents=false,
+                     holddown=[], holddown_depth=0) {
     il=inner[0]; iw=inner[1];
     ol=il+2*wall; ow=iw+2*wall;
     assert_printable(ol, ow, thick+lip_h, "K10 lid");
@@ -218,6 +241,8 @@ module enclosure_lid(inner, wall=2.4, rad=3, thick=2.4, boss_inset=0,
                 cube([2.2, iw*0.5, thick+2*EPS], center=false);
     }
     if (fan>0) translate([0,0,thick/2]) rotate([90,0,0]) fan_grille_flat(fan, thick);
+    // postes de sujeción del PCB (presionan el margen del PCB contra la repisa)
+    if (len(holddown)>0) lid_holddown(holddown, holddown_depth);
 }
 
 // Variantes de ventilador para superficie horizontal (tapa): atraviesan en Z
