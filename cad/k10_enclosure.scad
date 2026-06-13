@@ -26,8 +26,8 @@ part = "assembly";
 PCB_L      = 79;     // contorno PCB largo  (±2 mm, alta confianza)
 PCB_W      = 53;     // contorno PCB ancho  (±2 mm, alta confianza)
 PCB_T      = 1.6;    // grosor PCB (estándar)
-COMP_H     = 17;     // ⚠️ TODO-MEDIR: altura del componente más alto — las fotos
-                     //    cenitales NO dan altura. Valor generoso de momento.
+COMP_H     = 30;     // altura libre sobre el PCB = componentes más altos + holgura
+                     //    de ventilación (flujo de aire del ventilador). Fijado a 30 mm.
 // Patrón de agujeros (4 esquinas) ~72 x 44 mm centro-a-centro (±2-3 mm, confianza MEDIA).
 // No fiarse a ciegas: la retención principal es por contorno/tapa (ver nota abajo).
 HOLE_DX    = 36;     // = ~72/2  (verificar con calibre antes de imprimir definitivo)
