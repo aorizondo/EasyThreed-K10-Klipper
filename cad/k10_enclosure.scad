@@ -20,14 +20,18 @@ include <lib/enclosure_lib.scad>
 // -------- Render: "body" | "lid" | "assembly" --------
 part = "assembly";
 
-// -------- Parámetros de la placa K10 (TODO-MEDIR) --------
-PCB_L      = 80;     // TODO-MEDIR: largo PCB (estim. 75-90)
-PCB_W      = 55;     // TODO-MEDIR: ancho PCB (estim. 50-62)
+// -------- Parámetros de la placa K10 --------
+// Medidos por FOTOGRAMETRÍA (escala anclada al MCU GD32F303 LQFP48 = 7.0 mm,
+// verificado contando pines). Ver reference/medidas-fotogrametria.md.
+PCB_L      = 79;     // contorno PCB largo  (±2 mm, alta confianza)
+PCB_W      = 53;     // contorno PCB ancho  (±2 mm, alta confianza)
 PCB_T      = 1.6;    // grosor PCB (estándar)
-COMP_H     = 18;     // TODO-MEDIR: altura del componente más alto (cara superior)
-HOLE_INSET = 3.5;    // TODO-MEDIR: agujeros de montaje desde el borde (4 esquinas)
-HOLE_DX    = PCB_L/2 - HOLE_INSET;
-HOLE_DY    = PCB_W/2 - HOLE_INSET;
+COMP_H     = 17;     // ⚠️ TODO-MEDIR: altura del componente más alto — las fotos
+                     //    cenitales NO dan altura. Valor generoso de momento.
+// Patrón de agujeros (4 esquinas) ~72 x 44 mm centro-a-centro (±2-3 mm, confianza MEDIA).
+// No fiarse a ciegas: la retención principal es por contorno/tapa (ver nota abajo).
+HOLE_DX    = 36;     // = ~72/2  (verificar con calibre antes de imprimir definitivo)
+HOLE_DY    = 22;     // = ~44/2
 
 // -------- Botones del reverso (TODO-MEDIR posiciones) --------
 // La cara de soldadura lleva 8 botones: S3/S4 (lat. derecho), S5-S8 (fila inferior)
