@@ -22,3 +22,6 @@ Thumbs.db
 *.elf
 *.bin.lock
 out/
+
+# --- CAD: STL generados (regenerar con cad/build.sh) ---
+cad/stl/
