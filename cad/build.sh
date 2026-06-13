@@ -29,4 +29,7 @@ stl arduino_cnc_enclosure.scad lid  uno_lid.stl
 png arduino_cnc_enclosure.scad assembly uno_assembly.png "0,0,0,55,0,30,300"
 png arduino_cnc_enclosure.scad body     uno_body_top.png "0,0,0,18,0,0,290"
 
+echo "== Acople =="
+png coupling_demo.scad "" coupling_demo.png "0,0,0,62,0,28,360"
+
 echo "Listo. STL en cad/stl/  ·  PNG en cad/renders/"

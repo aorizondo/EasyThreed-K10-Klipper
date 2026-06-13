@@ -49,6 +49,8 @@ module uno_body() {
             port_rect(INNER, WALL, "right", 44, 12, pos=0, zc=cable_z);
             // Salida extra de cables (borde TRASERO -Y): endstops/spindle
             port_rect(INNER, WALL, "back", 30, 10, pos=0, zc=cable_z);
+            // Acoplamiento lateral con otras cajas (tornillo+tuerca M3)
+            couple_holes(INNER, WALL);
         }
     }
 }

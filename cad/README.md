@@ -8,10 +8,17 @@ Cajas paramétricas para las placas de la frankenprinter. Diseñadas para **impr
 
 | Pieza | Estado | Notas |
 |-------|--------|-------|
-| Librería `lib/enclosure_lib.scad` | ✅ | Módulos reutilizables (caja, bosses, standoffs, ventilador, dovetail, puertos) |
-| `k10_enclosure.scad` | 🟡 cotas estimadas | Funcional y watertight; faltan medidas reales (TODO-MEDIR) |
-| Caja Arduino Uno + CNC Shield | ⏳ pendiente | |
-| Acople cola de milano integrado | ⏳ pendiente | módulos listos en la lib, falta integrarlos en las cajas |
+| Librería `lib/enclosure_lib.scad` | ✅ | Caja, bosses M3, repisa + postes de retención, ventilador PC, puertos, acople |
+| `k10_enclosure.scad` | ✅ | PCB 79×53 (fotogrametría), retención por contorno, 3 sockets, ventana botones. Falta solo confirmar altura de componentes con calibre |
+| `arduino_cnc_enclosure.scad` | ✅ | Footprint Uno estándar, standoffs en agujeros oficiales, ventilador 50mm en tapa, COMP_H=40 para shield+drivers |
+| Acople entre cajas | ✅ | Atornillado lateral M3 (`couple_holes`), altura/posiciones comunes; ver `coupling_demo.scad` |
+
+### Sockets / puertos por caja
+- **K10**: motores (atrás), mazo cabezal VIN/FAN/HE/TH (derecha), microSD+USB-C+DC (frente), ventilador 40mm (izquierda), ventana de botones (suelo).
+- **Arduino+Shield**: USB-B/jack (izquierda), cables motores (derecha), endstops (atrás), ventilador 50mm (tapa).
+
+### Acople entre cajas
+Agujeros M3 pasantes a **z=30 mm** y **y=±24 mm** (constantes `COUPLE_Z`/`COUPLE_YS` en la lib), en pared maciza de todas las cajas. Dos cajas contiguas se unen con **tornillo M3 + tuerca**. Es encadenable (cualquier caja con cualquiera). `coupling_demo.scad` verifica la alineación.
 
 ## Cómo generar
 

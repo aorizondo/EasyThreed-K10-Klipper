@@ -107,6 +107,9 @@ module k10_body() {
                 translate([BTN_WIN_OFF[0], BTN_WIN_OFF[1], -EPS])
                     linear_extrude(FLOOR+2*EPS)
                         offset(r=1) square([BTN_WIN[0]-2, BTN_WIN[1]-2], center=true);
+
+            // --- ACOPLAMIENTO lateral con otras cajas (tornillo+tuerca M3) ---
+            couple_holes(INNER, WALL);
         }
         // rejilla del ventilador (cara izquierda)
         translate([-IL/2-WALL/2, 0, fan_z]) rotate([0,0,90]) fan_grille(FAN, WALL);

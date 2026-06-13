@@ -111,6 +111,23 @@ module dovetail_slot(len=40, height=6) {
 }
 
 // ============================================================================
+//  Acoplamiento lateral entre cajas (bolt-together)
+//   Agujeros M3 pasantes en las paredes laterales, a una altura (COUPLE_Z) y
+//   posiciones (COUPLE_YS) COMUNES a todas las cajas -> cualquier par de cajas
+//   contiguas se unen con tornillo+tuerca M3. Coloca los agujeros en pared
+//   maciza (fuera de los puertos). Encadenable.
+// ============================================================================
+COUPLE_Z  = 30;          // altura común de los agujeros de acople (mm desde el suelo)
+COUPLE_YS = [-24, 24];   // posiciones en Y (pared maciza en todas las cajas, ~56mm anchas)
+
+module couple_holes(inner, wall, z=COUPLE_Z, ys=COUPLE_YS, d=M3_CLEAR) {
+    il=inner[0];
+    for (y=ys)
+        translate([0, y, z]) rotate([0,90,0])
+            cylinder(d=d, h=il+4*wall, center=true);   // atraviesa ambas paredes laterales
+}
+
+// ============================================================================
 //  Boss de tornillo M3 (columna) con agujero según modo: "tap" | "insert" | "clear"
 // ============================================================================
 module screw_boss(h, mode="tap", od=BOSS_OD) {
