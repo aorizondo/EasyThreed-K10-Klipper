@@ -1,0 +1,24 @@
+# --- Repos de terceros clonados (referencia) ---
+# No se versionan: son clones externos con su propio historial git.
+# Reconstruir con:  ./scripts/clone-references.sh
+repos/
+
+# --- Volcados de firmware / binarios grandes (si los generas) ---
+reference/*.bin
+reference/*.dump
+reference/k10_original.bin
+
+# --- Sistema operativo / editor ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- Klipper: salidas generadas (por si compilas dentro del repo) ---
+*.o
+*.elf
+*.bin.lock
+out/
