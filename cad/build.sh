@@ -23,4 +23,10 @@ png k10_enclosure.scad assembly k10_assembly.png "0,0,0,55,0,30,250"
 png k10_enclosure.scad body     k10_body_top.png "0,0,0,18,0,0,230"
 png k10_enclosure.scad lid      k10_lid.png      "0,0,0,55,0,30,230"
 
+echo "== Arduino Uno + CNC Shield =="
+stl arduino_cnc_enclosure.scad body uno_body.stl
+stl arduino_cnc_enclosure.scad lid  uno_lid.stl
+png arduino_cnc_enclosure.scad assembly uno_assembly.png "0,0,0,55,0,30,300"
+png arduino_cnc_enclosure.scad body     uno_body_top.png "0,0,0,18,0,0,290"
+
 echo "Listo. STL en cad/stl/  ·  PNG en cad/renders/"

@@ -234,13 +234,13 @@ module enclosure_lid(inner, wall=2.4, rad=3, thick=2.4, boss_inset=0,
             translate([0,0,thick+lip_h-1.6+EPS]) cylinder(d1=M3_CLEAR, d2=HEAD_D, h=1.6);
         }
         // ventilador en la tapa (opcional)
-        if (fan>0) translate([0,0,thick/2]) rotate([90,0,0]) fan_cutout_flat(fan, thick);
+        if (fan>0) translate([0,0,thick/2]) fan_cutout_flat(fan, thick);
         // rejilla de ventilación simple (slots) opcional
         if (vents)
             for (i=[-3:3]) translate([i*5, 0, -EPS])
                 cube([2.2, iw*0.5, thick+2*EPS], center=false);
     }
-    if (fan>0) translate([0,0,thick/2]) rotate([90,0,0]) fan_grille_flat(fan, thick);
+    if (fan>0) translate([0,0,thick/2]) fan_grille_flat(fan, thick);
     // postes de sujeción del PCB (presionan el margen del PCB contra la repisa)
     if (len(holddown)>0) lid_holddown(holddown, holddown_depth);
 }
