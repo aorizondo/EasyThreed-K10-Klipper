@@ -31,19 +31,53 @@ no derivados a mano. Fuente del binario: reversing de palmarci (ver [stock/READM
 | S5 | Print / Lift | `M23 <archivo>` → `M24` · lift `G1 Z+10 F1000` |
 | S6–S9 | Posición 1–4 | `G28` + movimientos (`G1 X20 Y20 … X80 Y80`) |
 
-## 3. Pines GPIO — PARCIAL (acotado, sin mapeo fino aún)
+## 3. Pines GPIO — mapeo por reversing multi-agente (38 agentes, 5 lentes + verificación)
 
-Escaneo de referencias a periféricos en el binario (`p10_printer.bin`):
+Desensamblado Thumb del firmware OEM + verificación adversarial pin a pin.
+**⚠️ El binario es de la placa de palmarci (RCT6/LQFP64/256KB); esta placa es CBT6/LQFP48/128KB.
+El enrutado de pines PUEDE diferir entre variantes. Confirmar lo crítico en la placa real.**
 
-- **Puertos GPIO en uso: solo PA, PB, PC** (nada en PD/PE). Coherente con LQFP48.
-- **ADC1** → termistor (entrada analógica).
-- **TIM1, TIM3, TIM4** → generación de pasos y/o PWM de heater/fan.
-- **4 drivers HR4988** (Heroic) para X/Y/Z/E (identificados por palmarci).
+### ALTA confianza (consistente en varias lentes)
 
-Pendiente: mapeo fino función↔pin (qué PAxx es X_STEP, etc.). Ni palmarci lo hizo
-("requeriría reversing completo del PCB"). Vías: (a) desensamblado profundo del init
-GPIO e ISRs de los timers; (b) híbrido — el firmware acota a PA/PB/PC y multímetro
-confirma continuidad desde los pads de los HR4988 a los pines del MCU.
+| Pin | Función | Notas |
+|-----|---------|-------|
+| **PA2** | **Termistor hotend** (ADC1_IN2) | único pin analógico → sin cama caliente |
+| **PA3** | **Endstop** (input pull-up, polled) | hay **un solo** endstop discreto, no 3; eje sin confirmar |
+| **PA5 / PA6 / PA7** | **SPI1** SCK / MISO / MOSI | display/lector SD. OJO: PA6 es MISO, **no** un endstop |
+| **PB0,PB1,PB10,PB12,PB13,PB14,PB15** | **Teclado 7 botones** (S3–S9) | pull-up + EXTI; nº de botón concreto sin resolver |
+| **PB4 / PB5** | PWM TIM3 (remap parcial) CH1/CH2 | fan/heater (etiqueta tentativa) |
+| **PB6 / PB7 / PB8** | PWM TIM4 CH1/CH2/CH3 | fan/heater (etiqueta tentativa) |
+| **PA13 / PA14** | SWD (SWDIO/SWCLK) | **no reasignar** |
+
+### MEDIA confianza — STEPPERS (candidatos; eje X/Y/Z/E NO determinable)
+
+La ISR analizada es una rutina de **test que mueve los 4 ejes a la vez**, así que se distingue
+STEP vs DIR pero **no** qué eje es cada uno.
+
+| Grupo | Pines candidatos |
+|-------|------------------|
+| **STEP** (rápido) | PC15, PC13, PA9, **PA11** |
+| **DIR** (lento) | PC14, PA8, PA10, **PA12** |
+| **ENABLE** (LOW al boot, activo-bajo HR4988) | PB3, PA1 |
+| Aux estáticos (enable/select/sleep?) | PA4, PA15, PB9 |
+
+*La verificación adversarial refutó PA9=STEP y PC14=DIR → el grupo stepper es el menos fiable.*
+
+### SIN RESOLVER (crítico)
+
+- **🔴 Pin del HEATER del hotend.** Es **software-PWM** sobre un GPIO seleccionado desde una
+  tabla en RAM (`@0x20000754`/`@0x2000079c`, offset 0x2c) → no se resolvió a un pin literal.
+  Candidatos: PA4 / PA15 / PB9 o uno de los PWM. **Es el dato más importante que falta** (seguridad).
+- **Eje** de cada stepper (X/Y/Z/E).
+- **Etiqueta fan vs heater** de los 5 canales PWM (CCR escrito por punteros en runtime).
+
+### 🔴 ALERTA para el plan Klipper — PA11/PA12
+
+El firmware OEM usa **PA11/PA12 (las patas del USB D-/D+) como STEP/DIR de stepper**. Pero
+**tu USB de Klipper soldado ahí FUNCIONA** (enumera y comunica). La explicación más probable:
+tu placa CBT6/LQFP48 tiene un layout distinto al RCT6/LQFP64 de palmarci, y/o el grupo stepper
+del análisis (rutina de test) no aplica a tu placa. **Conclusión práctica:** en TU placa,
+PA11/PA12 = tu USB Klipper. No los uses para steppers en el `printer.cfg`.
 
 ## Equivalencia rápida a Klipper (lo ya listo)
 
