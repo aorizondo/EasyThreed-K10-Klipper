@@ -26,3 +26,7 @@ out/
 # --- CAD: STL generados (regenerar con cad/build.sh) ---
 cad/stl/
 firmware/k10/build/
+
+# Firmware OEM de EasyThreed (propietario): respaldo LOCAL, no redistribuir en repo publico.
+firmware/k10/stock/*.bin
+firmware/k10/stock/*.dump
