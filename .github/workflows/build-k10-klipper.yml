@@ -1,0 +1,78 @@
+name: Build K10 Klipper firmware
+
+# Compila Klipper para la EasyThreed K10 (GD32F303CBT6) en la nube y publica
+# p10_printer.bin como artefacto descargable. Evita necesitar el toolchain ARM local.
+#
+# Disparo manual: pestaña Actions -> "Build K10 Klipper firmware" -> Run workflow.
+# Tambien corre solo si cambias el .config o este workflow.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'firmware/k10/klipper.config'
+      - '.github/workflows/build-k10-klipper.yml'
+
+env:
+  # Commit de Klipper validado localmente (su Kconfig tiene STM32F103GD_DISABLE_SWD
+  # y la opcion de bootloader 16KiB). Fijado para builds reproducibles.
+  KLIPPER_COMMIT: 4c137ed3e58b2ede5afd90427f889169890c74f6
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Instalar toolchain ARM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
+          arm-none-eabi-gcc --version | head -1
+
+      - name: Clonar Klipper (commit fijado)
+        run: |
+          git clone https://github.com/Klipper3d/klipper.git klipper
+          git -C klipper checkout "$KLIPPER_COMMIT"
+          git -C klipper log -1 --oneline
+
+      - name: Aplicar configuracion de la K10
+        run: |
+          cp firmware/k10/klipper.config klipper/.config
+          make -C klipper olddefconfig
+
+      - name: Mostrar configuracion efectiva
+        run: |
+          grep -E 'CONFIG_MCU=|FLASH_APPLICATION_ADDRESS|CONFIG_USBSERIAL=|MACH_STM32F103=|DISABLE_SWD|CLOCK_REF_8M|FLASH_START_4000' klipper/.config
+
+      - name: Compilar
+        run: make -C klipper -j"$(nproc)"
+
+      - name: Verificar direccion de carga 0x08004000
+        run: |
+          arm-none-eabi-objdump -h klipper/out/klipper.elf | grep -E '\.text|\.isr|Algn' || true
+          if arm-none-eabi-objdump -h klipper/out/klipper.elf | grep -q '08004000'; then
+            echo "OK: el firmware se enlaza en 0x08004000 (offset 16KiB del bootloader K10)"
+          else
+            echo "FALLO: no se encontro la direccion 0x08004000 en el ELF"; exit 1
+          fi
+
+      - name: Renombrar a p10_printer.bin
+        run: |
+          cp klipper/out/klipper.bin p10_printer.bin
+          echo "Tamano:"; ls -l p10_printer.bin | awk '{print $5" bytes"}'
+          echo "SHA256:"; sha256sum p10_printer.bin
+          # 128KB flash - 16KB bootloader = 112KB (114688 bytes) maximo para la app
+          size=$(stat -c%s p10_printer.bin)
+          if [ "$size" -gt 114688 ]; then
+            echo "FALLO: el firmware ($size B) no cabe en 112KB tras el bootloader"; exit 1
+          fi
+          echo "OK: cabe en la flash disponible (112KB)"
+
+      - name: Publicar artefacto p10_printer.bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: p10_printer
+          path: p10_printer.bin
+          if-no-files-found: error

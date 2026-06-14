@@ -62,7 +62,17 @@ están justo al lado. Esta secuencia del borde es igual en LQFP48 y LQFP64 (solo
 Verifica SIEMPRE con multímetro (continuidad) antes de soldar: PA13 debe dar continuidad con el pad de
 SWDIO que ya identificaste en el reversing; el contiguo es PA12 (D+).
 
+> ⚠️ **Sobre la marca redonda (punto) del MCU:** ese punto marca el **pin 1 (VBAT)** y está en la
+> esquina **DIAGONALMENTE OPUESTA** a PA11/PA12. Es normal que NO coincida con los pines que vas a
+> soldar: D+/D− están en el lado contrario al punto. No es un error.
+>
+> En tu foto (punto arriba-izquierda, cristal a la izquierda) los pines de USB están en el **borde
+> DERECHO**. Contando desde la esquina superior-derecha hacia abajo:
+> **1 = VDD, 2 = VSS, 3 = PA13 (SWDIO), 4 = PA12 (D+), 5 = PA11 (D−).**
+
 ### Fotos de referencia
+![Pines de USB anotados sobre el pinout: punto = pin 1 (esquina opuesta), PA13/PA12/PA11 en el borde derecho](../reference/images/k10-mcu-usb-pins-anotado.png)
+
 ![Cara de componentes de la K10 (MCU GD32 en el centro)](../reference/images/k10-placa-front.jpg)
 
 ![Pines de depuración/SWD del GD32 identificados en el reversing](../reference/images/k10-mcu-swd-pins.png)
@@ -103,13 +113,51 @@ SWDIO que ya identificaste en el reversing; el contiguo es PA12 (D+).
 ```text
 Micro-controller Architecture: STMicroelectronics STM32
 Processor model: STM32F103
-Bootloader offset: 28KiB bootloader     (si cargas por SD; o "No bootloader" si flasheas por SWD)
+Bootloader offset: 16KiB bootloader     (K10: el cargador escribe en 0x4000 = 16 KiB; "No bootloader" si flasheas por SWD)
 Communication interface: USB (on PA11/PA12)      <-- ESTA es la clave de la opción USB nativo
 [*] Disable SWD at startup (GD32)
 ```
 
 Tras `make`, flashea por SWD o SD (ver [docs/05](../docs/05-flasheo-klipper.md)). En `[mcu k10]`:
 `serial: /dev/serial/by-id/usb-Klipper_stm32f103xe_XXXX-if00`.
+
+> ⚠️ **Importante — el USB nativo NO enumera hasta que Klipper esté flasheado.** El periférico USB del
+> GD32 lo activa el *firmware*; no es un chip USB-serie autónomo (CH340/FT232). Con el firmware de
+> fábrica (EasyThreed), conectar el cable a la PC no produce **nada** (ni "dispositivo desconocido").
+> Por eso el **primer** flasheo debe ir por **SWD o microSD**, nunca por USB. Solo después de tener
+> Klipper dentro aparecerá `/dev/serial/by-id/usb-Klipper_...` y servirá para validar esta soldadura.
+
+---
+
+## 6. Flasheo por microSD (datos reales del bootloader de la K10)
+
+> Fuente: reversing de la placa K10 (palmarci)
+> <https://palmarci.me/blog/2025-05-02-easythreed-k10-3d-printer-main-board-reversing/index.html>
+
+La K10 **NO** usa el bootloader MKS de la K9. No busca `mksLite.bin`. Su cargador propio busca:
+
+| Dato | Valor en la K10 |
+|------|------------------|
+| MCU | **GD32F303CBT6** (Cortex-M4, **LQFP48**, 128 KB flash, 48 KB RAM) — confirmado por el marcado del chip; el reversing de palmarci citaba un RCT6/LQFP64, pero esta placa monta el CBT6 de 48 pines |
+| Fichero de firmware que busca en la raíz de la SD | **`p10_printer.bin`** |
+| Offset de escritura | **`0x4000` = 16 KiB** (→ menuconfig: *16KiB bootloader*) |
+| Fichero de config opcional | `k10_cfg.txt` (se almacena en `0x1F800`) |
+| Tras flasheo correcto | renombra el `.bin` a `.CUR` |
+
+Procedimiento:
+
+1. **Respalda primero el firmware de fábrica** (por SWD, leyendo la flash) y guárdalo. Plan de
+   recuperación imprescindible por si el `.bin` de Klipper no bootea.
+2. Compila Klipper con el menuconfig de la sección 5 (**offset 16KiB**).
+3. Copia `out/klipper.bin` a la **raíz** de una microSD (FAT32) **renombrado a `p10_printer.bin`**.
+4. Con la placa apagada, inserta la SD; enciende y espera ~10-30 s.
+5. Reinserta la SD en la PC: si el fichero ahora se llama `p10_printer.CUR`, el cargador lo aceptó y
+   escribió. Si **sigue** llamándose `.bin`, fue **rechazado** (posible checksum/header propio del
+   cargador) → habrá que flashear por SWD.
+
+> ⚠️ **Sin confirmar:** no sabemos si el cargador de la K10 valida checksum/cabecera o desencripta el
+> `.bin` (muchos cargadores tipo MKS sí lo hacen). Por eso el paso 1 (respaldo + SWD de rescate) no es
+> opcional. La señal de éxito/rechazo es el renombrado a `.CUR` del paso 5.
 
 ---
 
