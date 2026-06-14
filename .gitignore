@@ -25,3 +25,4 @@ out/
 
 # --- CAD: STL generados (regenerar con cad/build.sh) ---
 cad/stl/
+firmware/k10/build/
