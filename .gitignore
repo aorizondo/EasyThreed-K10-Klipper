@@ -30,3 +30,8 @@ firmware/k10/build/
 # Firmware OEM de EasyThreed (propietario): respaldo LOCAL, no redistribuir en repo publico.
 firmware/k10/stock/*.bin
 firmware/k10/stock/*.dump
+
+# Artefactos de reversing (grandes, regenerables)
+firmware/k10/stock/disasm.txt
+
+firmware/cnc/build/
