@@ -25,25 +25,30 @@ Banner al conectar (115200 baud): `Grbl 1.1h ['$' for help]`.
 **Doble motor Y**: por **hardware** (jumpers de clonado del eje A puestos en Y). GRBL ve 3 ejes;
 el 2º motor Y lo mueve el socket A clonando la señal de Y.
 
-## steps/mm — PENDIENTE de calibrar
+## Motores (los 4, rotulados igual)
 
-Datos conocidos:
-- Motores X/Y = **Epson LX-300, motor de carro = 48 pasos/vuelta (7.5°)** (manual de servicio).
-- Microstepping **1/16** → 48×16 = 768 µpasos/vuelta.
-- Falta: **paso de correa × dientes de polea** (X/Y) y **paso del tornillo Z** (≈M8: si es varilla
-  roscada estándar, lead 1.25 mm → `$102 = 768 / 1.25 ≈ 614`; si fuese husillo T8 lead 8 mm → ≈96).
+**STP-42D221-01 (= EM-284)**: NEMA17, **1.8°/paso = 200 pasos/vuelta**, unipolar 5 cables
+(conectados como bipolar a los A4988), ~1 A/fase. Microstepping **1/16** → 200×16 = **3200 µpasos/vuelta**.
 
-Fórmulas:
-- Correa: `steps/mm = (48 × 16) / (paso_correa_mm × dientes_polea)`
-- Tornillo: `steps/mm = (48 × 16) / lead_mm`  (si el motor Z también es de 48 pasos)
+## steps/mm
 
-### Calibración empírica (lo fiable con motores reciclados)
+| Eje | `$` | Valor | Estado | Notas |
+|-----|-----|-------|--------|-------|
+| X | `$100` | 78.4 | **arranque (sin calibrar)** | teórico polea Ø13 mm: 3200 / (π·13) ≈ 78.4 |
+| Y | `$101` | 78.4 | **arranque (sin calibrar)** | ídem; recordar 2º motor Y por clonado HW |
+| Z | `$102` | **2225.8** | **CALIBRADO** (±2 %) | dir invertida `$3=4` |
 
-1. Margen de sobra para no chocar. Vref de los drivers ajustado (no quemar motores).
-2. `G91` (relativo), comanda 50 mm: `$J=G21G91X50F400`
-3. Mide el desplazamiento **real** con regla/calibre.
-4. `nuevo_$100 = $100_actual × (50 / real_mm)`. Aplica `$100=<valor>`. Repite hasta exacto.
-5. Igual para Y (`$101`) y Z (`$102`). Ajusta dirección con `$3` si algún eje va invertido.
+### Eje Z — calibrado (2026-06-16)
 
-> Si conservas los `$100/$101/$102` de cuando el CNC ya funcionaba con GRBL, aplícalos directamente
-> (se perdieron al reflashear: la EEPROM volvió a defaults $100=$101=$102=250).
+- **Dirección invertida**: `Z+` bajaba → `$3=4`.
+- Avance real del tornillo ≈ **1.44 mm/vuelta** (NO 2 mm; la medida a ojo del paso engañaba). Calibrado
+  empíricamente: 10 mm comandados → 9.8 mm reales → `$102 = 2225.8`.
+- **Backlash ≈ 0.55 mm** al invertir sentido (GRBL 1.1 no lo compensa → tuerca anti-holgura o asumirlo).
+- El Vref bajo causaba pérdida de pasos al subir; con **0.71 V** en el trimpot Z dejó de perderlos.
+
+### Calibración empírica X/Y (pendiente)
+
+1. Vref ajustado, margen para no chocar. `$J=G91 G21 X10 F400` (jog 10 mm).
+2. Mide el desplazamiento **real**. `nuevo_$100 = $100_actual × (10 / real_mm)`. Repite.
+3. Para precisión usa un recorrido largo (menos error relativo). Igual con Y (`$101`).
+4. Si un eje va invertido, añádelo a la máscara `$3` (bit0=X, bit1=Y, bit2=Z).
