@@ -20,7 +20,7 @@ Frankenprinter: fusionar el **cabezal de una EasyThreed K10** + la **mecánica d
 | Motores X/Y | Reciclados de impresoras **Epson LX** (pasos/correa a calibrar) |
 | Motor 2º en Y | El eje Y tiene **2 motores** (pórtico). Socket A del shield, clonado de Y |
 | Eje Z | Tornillo (≈ **M8**, paso por confirmar — probable varilla roscada 1.25 mm) |
-| Área de trabajo | **380 × 360 × 50 mm** (38×36×5 cm) |
+| Área de trabajo | **380 × 360 mm** (X/Y) · **recorrido Z 40 mm** |
 | Endstops | **Ninguno** en ningún eje → homing manual (cero a mano antes de cada trabajo) |
 
 ## Hitos conseguidos ✅
