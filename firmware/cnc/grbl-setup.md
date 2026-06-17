@@ -34,9 +34,14 @@ el 2º motor Y lo mueve el socket A clonando la señal de Y.
 
 | Eje | `$` | Valor | Estado | Notas |
 |-----|-----|-------|--------|-------|
-| X | `$100` | 78.4 | **arranque (sin calibrar)** | teórico polea Ø13 mm: 3200 / (π·13) ≈ 78.4 |
-| Y | `$101` | 78.4 | **arranque (sin calibrar)** | ídem; recordar 2º motor Y por clonado HW |
+| X | `$100` | 78.4 | **arranque (sin calibrar)** | mismo motor/polea que Y; **recablear a bipolar antes** |
+| Y | `$101` | **75.45** | **CALIBRADO** (<0.5%) | calibrado a baja velocidad; motor recableado a bipolar |
 | Z | `$102` | **2225.8** | **CALIBRADO** (±2 %) | dir invertida `$3=4` |
+
+> ⚠️ **Pérdida de pasos por velocidad**: con las bobinas en serie (alta inductancia), Y pierde pasos
+> a F600 (1.2% corto) pero va fino a F100 (0.2%). **Hay que limitar `$111`/`$121` por debajo del
+> umbral de pérdida** para mantener <0.5% en trabajo real (barrido de velocidad pendiente de cerrar).
+> Alternativa si se queda muy lento: recablear bobinas en **paralelo** (menos inductancia, más corriente).
 
 ### Eje Z — calibrado (2026-06-16)
 
