@@ -34,14 +34,30 @@ el 2º motor Y lo mueve el socket A clonando la señal de Y.
 
 | Eje | `$` | Valor | Estado | Notas |
 |-----|-----|-------|--------|-------|
-| X | `$100` | 78.4 | **arranque (sin calibrar)** | mismo motor/polea que Y; **recablear a bipolar antes** |
-| Y | `$101` | **75.45** | **CALIBRADO** (<0.5%) | calibrado a baja velocidad; motor recableado a bipolar |
-| Z | `$102` | **2225.8** | **CALIBRADO** (±2 %) | dir invertida `$3=4` |
+| Eje | steps/mm | vel. máx (mm/min) | acel. (mm/s²) | estado |
+|-----|----------|-------------------|---------------|--------|
+| X | `$100`=**75.83** | `$110`=**10000** | `$120`=**1200** | valores = Y (mismo motor/polea). **Verificar recableado bipolar de X** |
+| Y | `$101`=**75.83** | `$111`=**10000** | `$121`=**1200** | ✅ CALIBRADO <0.5%, motor recableado a bipolar |
+| Z | `$102`=**2225.8** | `$112`=**200** | `$122`=**8** | ✅ CALIBRADO ±2%, dir invertida `$3=4` |
 
-> ⚠️ **Pérdida de pasos por velocidad**: con las bobinas en serie (alta inductancia), Y pierde pasos
-> a F600 (1.2% corto) pero va fino a F100 (0.2%). **Hay que limitar `$111`/`$121` por debajo del
-> umbral de pérdida** para mantener <0.5% en trabajo real (barrido de velocidad pendiente de cerrar).
-> Alternativa si se queda muy lento: recablear bobinas en **paralelo** (menos inductancia, más corriente).
+> El traqueteo y la pérdida de pasos a velocidad **se resolvieron al recablear el motor a bipolar**
+> (antes, unipolar mal conectado, perdía 1.2% a F600). Ya bipolar, Y aguanta **10000 mm/min y
+> 1200 mm/s² sin perder pasos** (verificado por test de ida-vuelta, vuelve al origen exacto).
+
+### Tabla completa de settings GRBL
+
+| `$` | Valor | Significado |
+|-----|-------|-------------|
+| `$3` | 4 | invertir dirección (bit2 = Z) |
+| `$20`/`$21`/`$22` | 0/0/0 | soft limits / hard limits / homing **OFF** (sin endstops) |
+| `$100`/`$101`/`$102` | 75.83 / 75.83 / 2225.8 | steps/mm X/Y/Z |
+| `$110`/`$111`/`$112` | 10000 / 10000 / 200 | velocidad máx X/Y/Z (mm/min) |
+| `$120`/`$121`/`$122` | 1200 / 1200 / 8 | aceleración X/Y/Z (mm/s²) |
+| `$130`/`$131`/`$132` | 380 / 360 / 50 | recorrido máx X/Y/Z (mm) |
+
+> **Z** queda lento a propósito ($112=200, $122=8): tornillo de alto ratio (2225 steps/mm). Si se quiere
+> más rápido, calibrar su velocidad/aceleración aparte. **X** hereda los valores de Y pero su motor debe
+> estar recableado a bipolar y verificado (gira suave + mide bien) antes de fiarse del calibrado.
 
 ### Eje Z — calibrado (2026-06-16)
 
