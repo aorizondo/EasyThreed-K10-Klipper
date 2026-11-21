@@ -1,0 +1,83 @@
+# Travel limits after homing (units are in mm)
+>X_MIN_POS 0
+>Y_MIN_POS 0
+>Z_MIN_POS 0
+>X_MAX_POS 100
+>Y_MAX_POS 100
+>Z_MAX_POS 100
+
+# position of hotend  for filament change and pause print
+>FILAMENT_CHANGE_X_POS 5	 # X position of hotend  for filament change and pause print
+>FILAMENT_CHANGE_Y_POS 5	 # Y position of hotend  for filament change and pause print
+>FILAMENT_CHANGE_Z_ADD 5	 # Z addition of hotend (lift)	for filament change and pause print 
+
+#============================== Stepper Motor Settings ============================
+
+#Set stepper current 
+>CURRENT_VREF_XY                700	#Default motor current for XY in mA，range (0~1000)
+>CURRENT_VREF_Z                 800	#Default motor current for Z  in mA，range (0~1000)
+>CURRENT_VREF_E                 800     #Default motor current for E  in mA，range (0~1000)
+
+#Invert the stepper direction.
+>INVERT_X_DIR 	                1	
+>INVERT_Y_DIR 	                1
+>INVERT_Z_DIR                	1
+>INVERT_E0_DIR           	1
+
+#Movement setting
+>DEFAULT_X_STEPS_PER_UNIT	606	#Default Axis-X Steps Per Unit (steps/mm)	
+>DEFAULT_Y_STEPS_PER_UNIT	606	#Default Axis-Y Steps Per Unit (steps/mm)	
+>DEFAULT_Z_STEPS_PER_UNIT	600	#Default Axis-Z Steps Per Unit (steps/mm)	
+>DEFAULT_E_STEPS_PER_UNIT	1040	#Default Axis-E Steps Per Unit (steps/mm)	
+
+>DEFAULT_X_MAX_FEEDRATE		20	#Default Axis-X Max Feed Rate (mm/s)		
+>DEFAULT_Y_MAX_FEEDRATE		20	#Default Axis-Y Max Feed Rate (mm/s)		
+>DEFAULT_Z_MAX_FEEDRATE		20	#Default Axis-Z Max Feed Rate (mm/s)		
+>DEFAULT_E_MAX_FEEDRATE		20	#Default Axis-E Max Feed Rate (mm/s)		
+
+>DEFAULT_X_MAX_ACCELERATION	50	#Default Axis-X Max Acceleration (change/s) change = mm/s
+>DEFAULT_Y_MAX_ACCELERATION	50	#Default Axis-Y Max Acceleration (change/s) change = mm/s
+>DEFAULT_Z_MAX_ACCELERATION	50	#Default Axis-Z Max Acceleration (change/s) change = mm/s
+>DEFAULT_E_MAX_ACCELERATION	100	#Default Axis-E Max Acceleration (change/s) change = mm/s
+
+>
+>DEFAULT_XJERK 			2	#Default Axis-X Jerk (mm/s)	
+>DEFAULT_YJERK 			2	#Default Axis-Y Jerk (mm/s)	
+>DEFAULT_ZJERK 			0.4	#Default Axis-Z Jerk (mm/s)	
+>DEFAULT_EJERK 			0.5	#Default Axis-E Jerk (mm/s)	
+
+>DEFAULT_ACCELERATION		1000      	#Default Acceleration
+>DEFAULT_RETRACT_ACCELERATION	1000	#Default Retract Acceleration
+>DEFAULT_TRAVEL_ACCELERATION	1000	#Default Travel Acceleration
+
+#============================= Thermal Settings ============================
+
+>EXTRUDE_MINTEMP 	170
+>HEATER_0_MAXTEMP 	275
+
+
+#======================== Thermal Runaway Protection =======================
+
+>THERMAL_PROTECTION_PERIOD 		40    	#Seconds      打印中检测
+>THERMAL_PROTECTION_HYSTERESIS 		4     	#Degrees Celsius
+>WATCH_TEMP_PERIOD 			20	#Seconds      加热检测
+>WATCH_TEMP_INCREASE 			2	#Degrees Celsius
+
+
+# Type of heat manager for extruder.
+>PIDTEMP			1	# 1:PID	; 0:bang-bang
+>DEFAULT_Kp			22.2	#	--default
+>DEFAULT_Ki			1.08	#	--default
+>DEFAULT_Kd			114	#	--default
+
+
+#==============================  Home Settings ==============================
+
+>X_HOME_DIR -1				# Direction of endstops when homing; 1=MAX, -1=MIN :[-1,1]
+>Y_HOME_DIR 1				# Direction of endstops when homing; 1=MAX, -1=MIN :[-1,1]
+>Z_HOME_DIR -1				# Direction of endstops when homing; 1=MAX, -1=MIN :[-1,1]
+>HOMING_FEEDRATE_XY 1800                # Homing X Y speeds (mm/m)
+>HOMING_FEEDRATE_Z  1800                 # Homing Z speeds (mm/m)
+
+
+#end.
