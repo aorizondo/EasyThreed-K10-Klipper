@@ -11,6 +11,7 @@ Cajas paramétricas para las placas de la frankenprinter. Diseñadas para **impr
 | Librería `lib/enclosure_lib.scad` | ✅ | Caja, bosses M3, repisa + postes de retención, ventilador PC, puertos, acople |
 | `k10_enclosure.scad` | ✅ | PCB 79×53 (fotogrametría), retención por contorno, 3 sockets, ventana botones. Falta solo confirmar altura de componentes con calibre |
 | `arduino_cnc_enclosure.scad` | ✅ | Footprint Uno estándar, standoffs en agujeros oficiales, ventilador 50mm en tapa, COMP_H=40 para shield+drivers |
+| `adxl345_k9_mount.scad` | ✅ | Housing ADXL345 (10 pines, sin agujeros) sobre la cara superior del cabezal K9 de la MK4: PCB boca abajo en sándwich repisa+labio, Dupont en la tapa, 2×M3 avellanado al cabezal + plantilla de taladro. Cotas de ficha (28×15): TODO-MEDIR |
 | Acople entre cajas | ✅ | Atornillado lateral M3 (`couple_holes`), altura/posiciones comunes; ver `coupling_demo.scad` |
 
 ### Sockets / puertos por caja
