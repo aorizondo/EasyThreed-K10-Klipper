@@ -1,0 +1,80 @@
+<div id="settings_plugin_zpreload">
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">Precarga física de backlash</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: settings.plugins.zpreload.enabled">
+                    Activar precarga automática
+                </label>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Eje a rastrear</label>
+            <div class="controls">
+                <select data-bind="value: settings.plugins.zpreload.axis">
+                    <option value="Z">Z</option>
+                    <option value="X">X</option>
+                    <option value="Y">Y</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Corriente baja / restauración (mA)</label>
+            <div class="controls">
+                <input type="number" step="50" min="0" class="input-mini"
+                       data-bind="value: settings.plugins.zpreload.low_current"> baja (M907)
+                <input type="number" step="50" min="0" class="input-mini"
+                       data-bind="value: settings.plugins.zpreload.restore_current"> restauración
+                <span class="help-inline">Solo M907 funciona en esta placa (MKS_ROBIN_LITE + A4988 + PWM_MOTOR_CURRENT).</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Distancia de precarga (mm)</label>
+            <div class="controls">
+                <input type="number" step="0.01" min="0" class="input-mini"
+                       data-bind="value: settings.plugins.zpreload.preload_distance"> mm
+                <span class="help-inline">Debe cubrir la MAYOR de las dos holguras.</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Dwell adaptativo</label>
+            <div class="controls">
+                <input type="number" step="10" min="0" class="input-mini"
+                       data-bind="value: settings.plugins.zpreload.steps_per_mm"> pasos/mm
+                <input type="number" step="10" min="0" class="input-mini"
+                       data-bind="value: settings.plugins.zpreload.dwell_margin_ms"> margen ms
+                <span class="help-inline">{dwell} = ceil(preload × pasos/mm ÷ 976 × 1000) + margen. En este eje Z = 606 pasos/mm.</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">G-code de precarga (editable)</label>
+            <div class="controls">
+                <textarea class="input-block-level" rows="6"
+                          data-bind="value: settings.plugins.zpreload.preload_gcode"></textarea>
+                <span class="help-block">
+                    Variables: {axis} {low} {restore} {dwell} {preload} {dir} {signed_preload} {prev} {target} {preload_target}.
+                    Se inyecta antes de cada G0/G1 que invierte el sentido del eje.
+                </span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: settings.plugins.zpreload.only_during_print">
+                    Solo durante impresión (stream de fichero)
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: settings.plugins.zpreload.preload_on_first_move">
+                    Precargar también en el primer movimiento (tras homing / apagar motores)
+                </label>
+            </div>
+        </div>
+    </form>
+</div>
