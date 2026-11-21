@@ -1,0 +1,130 @@
+<div id="bk_jogwheel" class="bk-jogwheel">
+    <svg width="320" height="260" viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- ===== Homes en las esquinas (X / Y / Z / Todo) ===== -->
+        <g id="HomeAll" class="bkw-home" data-bind="click: function() { jogHomeClick('G28') }" transform="translate(10, 10)">
+            <path d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z"/>
+            <use x="3" y="217" width="20" height="18" xlink:href="#bk_HomeIcon"/>
+        </g>
+        <g id="HomeX" class="bkw-home" data-bind="click: function() { jogHomeClick('G28 X0') }" transform="translate(10, 10)">
+            <path d="M10 57.50 h-10 v-57.5 h57.5 v10 a 125,125 0 0,0 -47.5 47.5 Z"/>
+            <use x="3" y="5" width="20" height="18" xlink:href="#bk_HomeIcon"/>
+            <text x="25" y="20" class="bkw-home-l"> X</text>
+        </g>
+        <g id="HomeY" class="bkw-home" data-bind="click: function() { jogHomeClick('G28 Y0') }" transform="translate(10, 10)">
+            <path d="M230 57.50 h10 v-57.5 h-57.5 v10 a 125,125 0 0,1 47.5 47.5 z"/>
+            <use x="217" y="5" width="20" height="18" xlink:href="#bk_HomeIcon"/>
+            <text x="202" y="20" class="bkw-home-l"> Y</text>
+        </g>
+        <g id="HomeZ" class="bkw-home" data-bind="click: function() { jogHomeClick('G28 Z0') }" transform="translate(10, 10)">
+            <path d="M230 182.5 h10 v57.5 h-57.5 v-10 a 125,125 0 0,0 47.5 -47.5 z"/>
+            <use x="217" y="217" width="20" height="18" xlink:href="#bk_HomeIcon"/>
+            <text x="202" y="232" class="bkw-home-l"> Z</text>
+        </g>
+
+        <!-- ===== Anillos X/Y (0.1 · 1 · 10 · 100, interior→exterior) ===== -->
+        <g id="Jog100" fill="#bcbcbc" transform="translate(10, 10)">
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y100') }"  transform="translate(120 120)" d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60.00,-67.07 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X100') }"  transform="translate(120 120)" d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y-100') }" transform="translate(120 120)" d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60.00,67.07 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X-100') }" transform="translate(120 120)" d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z" />
+        </g>
+        <g id="Jog10" fill="#cdcdcd" transform="translate(10, 10)">
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y10') }"  transform="translate(120 120)" d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X10') }"  transform="translate(120 120)" d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y-10') }" transform="translate(120 120)" d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X-10') }" transform="translate(120 120)" d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z" />
+        </g>
+        <g id="Jog1" fill="#dedede" transform="translate(10, 10)">
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y1') }"  transform="translate(120 120)" d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X1') }"  transform="translate(120 120)" d="M35.16 -28.09 L51.13,-44.06 A67.5,67.05 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y-1') }" transform="translate(120 120)" d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X-1') }" transform="translate(120 120)" d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.05 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z" />
+        </g>
+        <g id="Jog0_1" fill="#ededed" transform="translate(10, 10)">
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y0.1') }"  transform="translate(120 120)" d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X0.1') }"  transform="translate(120 120)" d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('Y-0.1') }" transform="translate(120 120)" d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z" />
+            <path class="bkw-seg" data-bind="click: function() { jogAxesClick('X-0.1') }" transform="translate(120 120)" d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z" />
+        </g>
+
+        <!-- etiquetas de paso (sobre el eje +X) + letras de eje -->
+        <g transform="translate(130,130)" pointer-events="none">
+            <text class="bkw-lbl" x="14" y="3">0.1</text>
+            <text class="bkw-lbl" x="50" y="3">1</text>
+            <text class="bkw-lbl" x="72" y="3">10</text>
+            <text class="bkw-lbl" x="92" y="3">100</text>
+            <text class="bkw-axis" x="-7" y="-95">+Y</text>
+            <text class="bkw-axis" x="-7" y="103">-Y</text>
+            <text class="bkw-axis" x="-105" y="4">-X</text>
+            <text class="bkw-axis" x="90" y="-20">+X</text>
+        </g>
+
+        <!-- ===== Barra Z (0.1 · 1 · 10 · 100) ===== -->
+        <g id="Z+100" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z100') }" fill="#bcbcbc" transform="translate(270, 10)">
+            <path d=" M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"/>
+            <text class="bkw-zlbl" x="6" y="22">100</text>
+        </g>
+        <g id="Z+10" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z10') }" fill="#cdcdcd" transform="translate(270, 10)">
+            <rect x="0" y="32" width="40" height="30"/>
+            <text class="bkw-zlbl" x="9" y="53">10</text>
+        </g>
+        <g id="Z+1" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z1') }" fill="#dedede" transform="translate(270, 10)">
+            <rect x="0" y="62" width="40" height="26"/>
+            <text class="bkw-zlbl" x="15" y="81">1</text>
+        </g>
+        <g id="Z+0.1" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z0.1') }" fill="#ededed" transform="translate(270, 10)">
+            <rect x="0" y="88" width="40" height="24"/>
+            <text class="bkw-zlbl-s" x="11" y="104">0.1</text>
+        </g>
+        <g id="ZSpace" class="bkw-zhome" data-bind="click: function() { jogHomeClick('G28 Z0') }" transform="translate(270, 10)">
+            <rect x="0" y="112" width="40" height="22"/>
+            <text class="bkw-home-l" x="14" y="128">Z</text>
+        </g>
+        <g id="Z-0.1" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z-0.1') }" fill="#ededed" transform="translate(270, 10)">
+            <rect x="0" y="133" width="40" height="24"/>
+        </g>
+        <g id="Z-1" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z-1') }" fill="#dedede" transform="translate(270, 10)">
+            <rect x="0" y="156" width="40" height="26"/>
+        </g>
+        <g id="Z-10" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z-10') }" fill="#cdcdcd" transform="translate(270, 10)">
+            <rect x="0" y="179" width="40" height="30"/>
+        </g>
+        <g id="Z-100" class="bkw-seg" data-bind="click: function() { jogAxesClick('Z-100') }" fill="#bcbcbc" transform="translate(270, 10)">
+            <path d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"/>
+        </g>
+
+        <defs>
+            <style type="text/css">
+            #bk_jogwheel .bkw-seg { stroke:#9a9a9a; stroke-width:1; cursor:pointer; transition:fill .1s; }
+            #bk_jogwheel .bkw-seg:hover, #bk_jogwheel .bkw-seg:hover path, #bk_jogwheel .bkw-seg:hover rect { fill:#f0a23a; }
+            #bk_jogwheel .bkw-home > path, #bk_jogwheel .bkw-home > rect { fill:#dfeee1; stroke:#9a9a9a; stroke-width:1; }
+            #bk_jogwheel .bkw-home, #bk_jogwheel .bkw-zhome { cursor:pointer; }
+            #bk_jogwheel .bkw-home:hover > path, #bk_jogwheel .bkw-zhome:hover > rect { fill:#f0a23a; }
+            #bk_jogwheel .bkw-zhome > rect { fill:#9fc4a4; stroke:#9a9a9a; stroke-width:1; }
+            #bk_jogwheel .bkw-home-l { font:700 16px helvetica; fill:#2f3b30; stroke:none; pointer-events:none; }
+            #bk_jogwheel .bkw-lbl { font:600 12px sans-serif; fill:#333; stroke:none; }
+            #bk_jogwheel .bkw-zlbl { font:600 14px sans-serif; fill:#333; stroke:none; pointer-events:none; }
+            #bk_jogwheel .bkw-zlbl-s { font:600 10px sans-serif; fill:#333; stroke:none; pointer-events:none; }
+            #bk_jogwheel .bkw-axis { font:700 11px sans-serif; fill:#666; stroke:none; }
+            #bk_jogwheel .bkw-home-icon { fill:#3a6b40; }
+            </style>
+            <symbol id="bk_HomeIcon" viewBox="0 0 20 18" pointer-events="none">
+                <path class="bkw-home-icon" d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z"/>
+                <path class="bkw-home-icon" d="M0,10 l10-8.5 l10,8.5" stroke="#3a6b40" stroke-width="1.5" fill="none"/>
+            </symbol>
+        </defs>
+    </svg>
+    <!-- Velocidad del jog (mm/min): slider VERTICAL + input. XY es el principal; Z aparte
+         (suele ir más lento). Rango 100–50000 (configurable); se envía como F del G1. -->
+    <div class="bkw-feed" title="Velocidad del jog (mm/min). Rango 100–50000. Se envía como F del movimiento.">
+        <span class="bkw-feed-lbl">Feed</span>
+        <input type="range" class="bk-vslider" step="100"
+               data-bind="attr: {min: jogFeedMin, max: jogFeedMax}, value: jogFeedXY, valueUpdate: 'input'">
+        <input type="number" class="bkw-feednum"
+               data-bind="attr: {min: jogFeedMin, max: jogFeedMax}, value: jogFeedXY, valueUpdate: 'input'">
+        <span class="bkw-feed-unit">mm/min</span>
+        <label class="bkw-feed-z">Z <input type="number" class="bkw-feednum bkw-feednum-z"
+               data-bind="attr: {min: jogFeedMin, max: jogFeedMax}, value: jogFeedZ, valueUpdate: 'input'"></label>
+    </div>
+    <div class="bkw-pos" data-bind="text: posLabel" title="Posición en vivo (reporte del firmware)"></div>
+</div>

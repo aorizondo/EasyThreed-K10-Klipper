@@ -1,0 +1,3 @@
+recursive-include octoprint_boostkit/static *
+recursive-include octoprint_boostkit/templates *
+include README.md

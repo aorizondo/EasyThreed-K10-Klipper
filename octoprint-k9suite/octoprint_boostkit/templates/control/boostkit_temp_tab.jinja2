@@ -1,0 +1,85 @@
+<div class="bktemp">
+    <!-- Control de temperatura (slider + número + presets) -->
+    <div class="bktemp-control">
+        <!-- Sliders por elemento CAPACITADO del perfil (hotend(s)/cama/cámara),
+             UNIFICADOS con el resto del plugin (fábrica compartida): el hotend trata
+             0 como apagado y salta al piso activo (150) hasta el tope (280). -->
+        <div class="bk-tempctl" data-bind="foreach: tempControls">
+            <div class="bktc-row">
+                <label class="bksl-label" data-bind="text: label"></label>
+                <input type="range" class="bksl-range" min="0" step="1"
+                       data-bind="value: set, valueUpdate:'input', attr:{max: max},
+                                  event:{input: function(){ $parent.onTempInput($data); }, change: function(){ $parent.applyTempControl($data); }}">
+                <input type="number" class="bksl-num" min="0"
+                       data-bind="value: set, attr:{max: max},
+                                  event:{input: function(){ $parent.markTempEdit($data); }, change: function(){ $parent.applyTempControl($data); }}">
+                <span class="bksl-unit">°C</span>
+                <button class="btn btn-mini btn-primary" data-bind="click: function(){ $parent.applyTempControl($data); }">Set</button>
+                <span class="bktc-live"><strong data-bind="text: actual"></strong>° / <span data-bind="text: target"></span>°</span>
+            </div>
+        </div>
+        <div class="bktc-presets">
+            <span class="muted">Perfiles:</span>
+            <!-- ko foreach: octoProfiles -->
+            <button class="btn btn-mini" data-bind="text: name, click: function(){ $parent.applyOctoProfile($data); }, attr: {title: 'Hotend ' + extruder + '° · Cama ' + bed + '°'}"></button>
+            <!-- /ko -->
+            <span class="muted small" data-bind="visible: octoProfiles().length === 0">Define perfiles en Ajustes › Temperaturas</span>
+            <button class="btn btn-mini btn-link" data-bind="click: coolAll">Enfriar todo</button>
+        </div>
+    </div>
+
+    <div class="bktemp-toolbar">
+        <div class="btn-group">
+            <button class="btn btn-small" data-bind="click: toggleLive, css: {'btn-success': live}"
+                    title="Seguir en vivo">
+                <i class="fas fa-play"></i> <span data-bind="text: live() ? 'En vivo' : 'Pausado'"></span>
+            </button>
+            <button class="btn btn-small" data-bind="click: resetView" title="Reiniciar vista (doble clic en la gráfica)">
+                <i class="fas fa-expand"></i> Auto
+            </button>
+        </div>
+
+        <div class="btn-group" style="margin-left:8px;">
+            <button class="btn btn-small" data-bind="click: function(){ analyzeMode(!analyzeMode()); }, css: {'btn-primary': analyzeMode}"
+                    title="Arrastra sobre la gráfica para seleccionar un tramo (o Shift+arrastrar)">
+                <i class="fas fa-ruler-horizontal"></i> Analizar pendiente
+            </button>
+            <button class="btn btn-small" data-bind="click: clearSelection" title="Limpiar selección">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <span style="margin-left:8px;">Serie:
+            <select class="input-small" data-bind="options: seriesList, optionsText: 'label', optionsValue: 'key', value: analyzeSeries"></select>
+        </span>
+
+        <span class="bktemp-hover" data-bind="text: hoverInfo"></span>
+    </div>
+
+    <div class="bktemp-canvas-wrap">
+        <canvas id="bktemp_canvas"></canvas>
+    </div>
+
+    <!-- Resultado del análisis de pendiente -->
+    <div class="bktemp-result" data-bind="visible: result">
+        <!-- ko if: result() && result().ok -->
+        <div class="bktemp-rate">
+            <span class="bktemp-rate-big" data-bind="text: (result() ? (result().slope >= 0 ? '+' : '') + result().slope.toFixed(3) : '') + ' °C/s'"></span>
+            <span class="muted" data-bind="text: 'serie ' + (result() ? result().key : '')"></span>
+        </div>
+        <div class="muted" data-bind="text:
+            'Δ ' + (result() ? result().dv.toFixed(1) : '') + ' °C en ' + (result() ? result().dt.toFixed(1) : '') + ' s' +
+            '  ·  ' + (result() ? (result().slope * 60).toFixed(1) : '') + ' °C/min' +
+            '  ·  R² ' + (result() ? result().r2.toFixed(3) : '') +
+            '  ·  ' + (result() ? result().n : '') + ' puntos'"></div>
+        <!-- /ko -->
+        <!-- ko if: result() && !result().ok -->
+        <div class="muted">Selección demasiado corta para calcular pendiente (mín. 2 puntos).</div>
+        <!-- /ko -->
+    </div>
+
+    <div class="bktemp-help muted">
+        Rueda = zoom · arrastrar = desplazar · doble clic = vista automática ·
+        “Analizar pendiente” o Shift+arrastrar = seleccionar tramo para la tasa de calentamiento.
+    </div>
+</div>

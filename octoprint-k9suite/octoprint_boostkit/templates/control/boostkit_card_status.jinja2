@@ -1,0 +1,45 @@
+<div id="gen_plugin_boostkit_status" class="bkcard-status">
+    <!-- Estado de capa/altura (del tracker mode-aware) -->
+    <div class="bks-row bks-live">
+        <span class="bks-metric"><i class="fas fa-layer-group"></i> Capa <strong data-bind="text: tlayer"></strong></span>
+        <span class="bks-metric"><i class="fas fa-ruler-vertical"></i> Z <strong data-bind="text: theight"></strong> mm</span>
+    </div>
+
+    <!-- Banner de capacidades (no planar / multi-eje) -->
+    <div class="bks-banner" data-bind="visible: capsBanner(), text: capsBanner"></div>
+
+    <!-- Objetos cancelables (cancel-object / M486) -->
+    <div class="bks-section" data-bind="visible: objects().length > 0">
+        <div class="bks-title">Objetos <small class="muted" data-bind="visible: jobCaps().m486">· M486 nativo</small><small class="muted" data-bind="visible: !jobCaps().m486">· supresión</small></div>
+        <div class="bks-objs" data-bind="foreach: objects">
+            <div class="bks-obj" data-bind="css: { 'bks-cancelled': cancelled() }">
+                <span class="bks-obj-name" data-bind="text: name, attr: { title: name }"></span>
+                <button class="btn btn-mini" data-bind="click: $parent.toggleCancelObject,
+                        css: { 'btn-danger': !cancelled(), 'btn-link': cancelled() }">
+                    <span data-bind="text: cancelled() ? 'Reactivar' : 'Cancelar'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skip-to: saltar a un checkpoint -->
+    <div class="bks-section">
+        <div class="bks-title">Saltar a</div>
+        <div class="bks-skip" data-bind="visible: canSkip()">
+            <select class="bks-skip-sel" data-bind="options: checkpoints,
+                    optionsText: 'label', optionsValue: 'idx', value: skipSel,
+                    optionsCaption: 'Elige capa/sección…'"></select>
+            <label class="bks-skip-start checkbox inline">
+                <input type="checkbox" data-bind="checked: skipStart"> imprimir
+            </label>
+            <button class="btn btn-mini btn-primary" data-bind="click: doSkipTo,
+                    enable: skipSel() != null && !skipBusy()">
+                <i class="fas fa-forward"></i> Saltar
+            </button>
+        </div>
+        <div class="muted small" data-bind="visible: !canSkip()">
+            Sin checkpoints (fichero no planar sin marcadores de capa).
+        </div>
+        <div class="bks-skip-msg small" data-bind="text: skipMsg, visible: skipMsg()"></div>
+    </div>
+</div>

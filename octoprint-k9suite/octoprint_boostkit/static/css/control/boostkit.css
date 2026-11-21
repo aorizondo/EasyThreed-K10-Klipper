@@ -1,0 +1,619 @@
+/* ===== Tokens compartidos Boost Kit (fuente única de color/tamaño) =====
+   Unifica lo que antes estaba hardcodeado por módulo: 1 azul primary + activo,
+   verde/rojo únicos, alturas y radios estándar. Los módulos apuntan a estas vars. */
+:root{
+  --bk-primary:#2b6cb0; --bk-primary-hover:#3a7bc0; --bk-active:#4a90d9;
+  --bk-ink:#37474f; --bk-ink2:#455a64; --bk-ink3:#607d8b; --bk-ink4:#90a4ae; --bk-ink5:#b0bec5;
+  --bk-success:#27ae60; --bk-success-ink:#2e7d32; --bk-success-bg:#eafaf1; --bk-success-bd:#c8e6d4;
+  --bk-danger:#c0392b; --bk-warn:#f0ad4e; --bk-warn-ink:#8a6d3b;
+  --bk-caps-bg:#eef5fb; --bk-caps-bd:#cfe2f3; --bk-caps-ink:#34607f;
+  --bk-line:#cfd8dc; --bk-line-soft:rgba(127,127,127,.15);
+  --bk-btn-bg:#f5f7f9; --bk-btn-hover:#eceff1;
+  --bk-h:26px;      /* altura estándar input/control */
+  --bk-btn-h:30px;  /* altura de botón */
+  --bk-r:5px;       /* radio estándar */
+  /* acentos de slider distintos POR MÉTRICA a propósito */
+  --bk-acc-feed:#4a90d9; --bk-acc-flow:#27ae60; --bk-acc-fan:#16a085; --bk-acc-temp:#e67e22;
+}
+
+#tab_plugin_boostkit .bk-section {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+#tab_plugin_boostkit .bk-section:last-child { border-bottom: none; }
+#tab_plugin_boostkit .bk-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+#tab_plugin_boostkit .muted { color: #888; }
+#tab_plugin_boostkit .small { font-size: 12px; }
+#tab_plugin_boostkit .bk-state { margin-left: 6px; }
+#tab_plugin_boostkit .input-mini { width: 54px; text-align: center; }
+
+.bk-navbar { margin: 0 6px; }
+.bk-navbar .bk-nav-hold { color: #d9534f; font-size: 16px; }
+.bk-navbar .bk-nav-resume { color: #5cb85c; font-size: 16px; }
+.bk-navbar .bk-nav-hot { margin-left: 10px; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600; text-decoration: none; }
+.bk-navbar .bk-nav-hot.bk-hot-on { background: #f0ad4e; color: #fff; }
+.bk-navbar .bk-nav-hot.bk-hot-off { background: rgba(127,127,127,0.25); color: #999; }
+.bk-navbar .bk-nav-hot:hover { text-decoration: none; opacity: 0.85; }
+
+/* Badge de hot-tune en el panel de control */
+.bkpanel .bk-hot-badge {
+    padding: 3px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    background: #f0ad4e; color: #fff;
+}
+.bkpanel .bk-hot-badge.bk-hot-off-badge { background: #d9534f; }
+#boostkit_control_panel.bk-hot-active { box-shadow: inset 0 0 0 2px rgba(240,173,78,0.4); }
+#boostkit_control_panel.bk-hot-off { box-shadow: inset 0 0 0 2px rgba(217,83,79,0.35); }
+#boostkit_control_panel.bk-hot-off .bk-jog-card,
+#boostkit_control_panel.bk-hot-off .bk-extrude-card { opacity: 0.55; pointer-events: none; }
+
+/* ===== Panel de control consolidado ===== */
+.bkpanel .bk-topbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 8px 10px; margin-bottom: 10px;
+    background: rgba(127,127,127,0.06); border-radius: 6px;
+    position: sticky; top: 0; z-index: 5;
+}
+.bkpanel .bk-topbar .btn-large { min-width: 150px; }
+.bkpanel .bk-zone { }
+.bkpanel .bk-card {
+    border: 1px solid rgba(127,127,127,0.22); border-radius: 6px;
+    padding: 8px 10px; margin-bottom: 10px;
+}
+.bkpanel .bk-card-h { font-weight: 600; margin-bottom: 6px; }
+.bkpanel .bk-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.bkpanel .muted { color: #888; } .bkpanel .small { font-size: 11px; }
+.bkpanel label.bk-inl { width: 38px; display: inline-block; margin: 0; }
+.bkpanel .input-mini { width: 52px; text-align: center; }
+.bkpanel .input-small { width: 64px; text-align: center; }
+
+/* Jog */
+.bkpanel .bk-jog { display: flex; gap: 18px; align-items: center; }
+.bkpanel .bk-jog-xy {
+    display: grid; grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 38px);
+    gap: 4px;
+}
+.bkpanel .bk-jog-xy .btn { padding: 0; font-size: 15px; }
+.bkpanel .jog-yp { grid-column: 2; grid-row: 1; }
+.bkpanel .jog-xm { grid-column: 1; grid-row: 2; }
+.bkpanel .jog-home { grid-column: 2; grid-row: 2; }
+.bkpanel .jog-xp { grid-column: 3; grid-row: 2; }
+.bkpanel .jog-ym { grid-column: 2; grid-row: 3; }
+.bkpanel .bk-jog-z { display: flex; flex-direction: column; gap: 4px; }
+.bkpanel .bk-jog-z .btn { width: 64px; }
+.bkpanel .bk-steps { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.bkpanel .btn-mini { padding: 2px 7px; }
+
+/* Extrusión / temp */
+.bkpanel .btn-block-half { flex: 1; }
+.bkpanel .bk-temprow { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.bkpanel .bk-temprow label { width: 52px; margin: 0; }
+.bkpanel .bk-live { margin-left: auto; font-family: monospace; }
+.bkpanel .bk-live strong { font-size: 15px; }
+
+/* Plegables */
+.bkpanel details.bk-det > summary {
+    cursor: pointer; font-weight: 600; padding: 2px 0; list-style: revert;
+}
+.bkpanel details.bk-det[open] { padding-bottom: 10px; }
+.bkpanel .bk-limgrid { display: grid; grid-template-columns: 1fr; gap: 4px; margin-top: 6px; font-size: 12px; }
+.bkpanel .bk-limgrid .input-mini { width: 58px; }
+.bkpanel .bk-limgrid b { display: inline-block; min-width: 110px; }
+.bkpanel .bk-trackbar { margin-top: 8px; font-family: monospace; font-size: 12px; }
+
+/* ===== Panel de control (tab propio "Enhanced Controls", compacto) ===== */
+/* El panel vive en su propia pestaña; el tab Control nativo queda intacto. */
+#boostkit_control_panel .bk-card { padding: 6px 8px; margin-bottom: 7px; }
+#boostkit_control_panel .bk-card-h { margin-bottom: 4px; font-size: 13px; }
+#boostkit_control_panel .btn-mini { padding: 1px 6px; font-size: 11px; }
+#boostkit_control_panel .bk-topbar { padding: 6px 8px; margin-bottom: 8px; }
+#boostkit_control_panel .bk-topbar .btn { padding: 6px 12px; }
+/* fila de botones compacta (extrusión, etc.): se reparten el ancho */
+.bkpanel .bk-btnrow { display: flex; align-items: center; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+.bkpanel .bk-btnrow .btn { flex: 1 1 0; min-width: 70px; white-space: nowrap; }
+.bkpanel .bk-btnrow .muted { flex: 1 1 100%; }
+/* tarjeta de modos en una sola línea */
+.bkpanel .bk-modecard { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* ===== Sliders estilo Marlin Slider (2x2) ===== */
+.bkpanel .bk-mslgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.bkpanel .bk-msl { border: 1px solid rgba(127,127,127,0.18); border-radius: 5px; padding: 4px 6px; }
+.bkpanel .bk-msl-val { text-align: center; font-weight: 700; font-family: monospace; font-size: 14px; line-height: 1.1; }
+.bkpanel .bk-msl-val .bk-msl-max { font-family: sans-serif; font-weight: 400; font-size: 10px; color: #90a4ae; margin-left: 5px; }
+.bkpanel .bk-msl-row { display: flex; align-items: center; gap: 4px; margin: 2px 0; }
+.bkpanel .bk-msl-row .btn { flex: none; padding: 1px 6px; }
+/* sliders = input range NATIVO (reactivo a min/max dinámicos vía attr binding) */
+.bkpanel .bk-msl-slider { flex: 1; min-width: 0; height: 20px; margin: 0 2px; cursor: pointer; accent-color: #4a90d9; }
+.bkpanel .bk-msl-feed { accent-color: #4a90d9; }
+.bkpanel .bk-msl-flow { accent-color: #27ae60; }
+.bkpanel .bk-msl-fan  { accent-color: #16a085; }
+/* el "freeze" (deshabilitado momentáneo al subir el tope) NO debe atenuar el slider */
+.bkpanel .bk-msl-slider:disabled { opacity: 1; cursor: pointer; }
+.bkpanel .bk-msl-row .slider.slider-horizontal { width: 100% !important; flex: 1; margin: 0 2px; }
+.bkpanel .bk-msl-row2 { display: flex; align-items: center; gap: 4px; }
+.bkpanel .bk-msl-row2 .btn { flex: none; padding: 1px 6px; }
+.bkpanel .bk-msl-set { flex: 1 !important; text-align: center; font-weight: 600; }
+@media (max-width: 900px) { .bkpanel .bk-mslgrid { grid-template-columns: 1fr; } }
+/* slider de una sola fila (fan, babystep): [−][slider][+][valor][acciones] */
+.bkpanel .bk-msl-wide { border: 0; padding: 0; }
+.bkpanel .bk-msl-wide .bk-msl-val { display: inline-block; min-width: 56px; text-align: right; font-size: 13px; }
+/* modos abs/rel embebidos en la tarjeta de jog */
+.bkpanel .bk-modeinline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(127,127,127,0.15); }
+
+/* ===== Top: extrusión (izq) + jog wheel (der) en dos columnas ===== */
+.bkpanel .bk-toprow { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.bkpanel .bk-extrude-card { flex: 1 1 300px; min-width: 280px; }
+.bkpanel .bk-jog-card { flex: 0 0 auto; width: 340px; max-width: 100%; }
+.bkpanel .bk-exrow .input-mini { width: 56px; }
+.bkpanel .bk-exrow .btn { white-space: nowrap; }
+@media (max-width: 760px) { .bkpanel .bk-jog-card { width: 100%; } }
+
+/* ===== Jog wheel (SVG copiado del plugin jogwheel, ids aislados bk_) ===== */
+#bk_jogwheel { width: 100%; text-align: center; }
+#bk_jogwheel svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+#bk_jogwheel text { font-family: helvetica; }
+symbol#bk_JogRose text.scl { fill: white !important; stroke: white !important; }
+symbol#bk_JogRose circle.scl { stroke: red !important; stroke-width: 3 !important; }
+
+/* ===== Tips de uso ===== */
+.bkpanel .bk-tip { display: block; color: #78909c; font-size: 11px; margin-top: 4px; }
+.bkpanel .bk-tip i { margin-right: 4px; color: #90a4ae; }
+.bkpanel .bk-card-h .bk-help { font-weight: normal; color: #b0bec5; font-size: 11px; cursor: help; margin-left: 6px; }
+
+/* ===== Toggles abs/rel ===== */
+.bkpanel .bk-inl { display: inline-block; min-width: 72px; }
+
+/* ===== Grid de parámetros de máquina (tracking en vivo) ===== */
+.bkpanel .bk-fwgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin-top: 8px; }
+.bkpanel .bk-fwcard { border: 1px solid #e0e4e8; border-radius: 4px; padding: 6px 8px; background: #fafbfc; }
+.bkpanel .bk-fwh { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.bkpanel .bk-fwh b { font-size: 12px; }
+.bkpanel .bk-fwh .pull-right { margin-left: 4px; }
+.bkpanel .bk-fwfields { display: flex; flex-wrap: wrap; gap: 6px; }
+.bkpanel .bk-fwfield { display: flex; flex-direction: column; font-size: 11px; }
+.bkpanel .bk-fwfield label { margin: 0; color: #607d8b; font-size: 10px; }
+.bkpanel .bk-fwfield .input-mini { width: 64px; height: 22px; padding: 1px 4px; }
+.bkpanel .bk-fwlive { color: #2e7d32; font-style: normal; font-family: monospace; font-size: 10px; }
+
+/* ============================================================
+   TABLERO POR FILAS (rediseño)
+   ============================================================ */
+.bkpanel .bk-topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.bkpanel .bk-topbar .bk-trackbar { margin: 0 0 0 auto; font-family: monospace; font-size: 11px; }
+
+/* rejillas de 2 y 3 columnas; las tarjetas hijas igualan altura */
+/* auto-fit minmax: responsive al ANCHO DEL CONTENEDOR (no del viewport), así el
+   panel se reorganiza aunque viva en una columna estrecha de #control. */
+.bkpanel .bk-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 8px; align-items: stretch; margin-bottom: 8px; }
+.bkpanel .bk-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; align-items: stretch; margin-bottom: 8px; }
+.bkpanel .bk-grid2 > .bk-card, .bkpanel .bk-grid3 > .bk-card { margin-bottom: 0; display: flex; flex-direction: column; min-width: 0; }
+
+/* Tarjeta jog COMPACTA: la rueda se CAPA (antes width:100% la hacía gigante y, por el
+   align-items:stretch del grid, estiraba toda la fila -> gráfica de temp también enorme).
+   La rueda y el panel de feed vertical van EN LA MISMA FILA; la posición debajo. */
+.bkpanel .bk-grid2 > .bk-jog-card { width: auto; max-width: none; flex: initial; }
+.bkpanel .bk-jog-card { align-items: stretch; }
+.bkpanel .bk-jog-card #bk_jogwheel {
+    flex: none;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 6px; max-width: 320px; margin: 0 auto;
+}
+.bkpanel .bk-jog-card #bk_jogwheel svg { flex: 1 1 auto; min-width: 0; width: auto; max-width: 230px; height: auto; margin: 0; }
+.bkpanel .bk-jog-card #bk_jogwheel .bkw-pos { flex-basis: 100%; order: 3; }
+
+/* ===== Temperatura ===== */
+.bkpanel .bk-temp-card { min-width: 0; }
+.bkpanel .bk-temp-now { margin-left: auto; display: inline-flex; gap: 6px; font-weight: normal; }
+.bkpanel .bk-chip { font-family: monospace; font-size: 12px; padding: 1px 8px; border-radius: 10px; background: rgba(127,127,127,0.1); }
+.bkpanel .bk-chip-hot i { color: #c0392b; } .bkpanel .bk-chip-bed i { color: #4a90d9; }
+.bkpanel .bk-temprow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 5px; }
+.bkpanel .bk-temprow label { width: auto; margin: 0; font-weight: 600; }
+.bkpanel .bk-temp-presets { margin-bottom: 5px; }
+/* Sliders de temperatura por elemento capacitado (hotend/cama/cámara) */
+.bkpanel .bk-tempctl { margin: 4px 0 6px; }
+.bkpanel .bk-tcrow { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+.bkpanel .bk-tcname { width: 62px; margin: 0; font-weight: 600; color: #455a64; flex: none; }
+.bkpanel .bk-tsl { flex: 1; min-width: 40px; height: 22px; margin: 0; cursor: pointer; accent-color: #e67e22; vertical-align: middle; }
+/* input numérico alineado: border-box + altura fija + sin margen (Bootstrap mete 10px) */
+.bkpanel .bk-tcnum { width: 50px; flex: none; height: 22px; box-sizing: border-box; margin: 0; padding: 1px 4px; line-height: 18px; text-align: center; }
+/* ancho FIJO para que al crecer los dígitos (21 -> 210) no se reflowee la fila */
+.bkpanel .bk-tclive { font-family: monospace; font-size: 12px; color: #607d8b; white-space: nowrap;
+    margin-left: auto; flex: none; min-width: 104px; text-align: right; font-variant-numeric: tabular-nums; }
+.bkpanel .bk-temp-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.bkpanel .bk-temp-series { width: 90px; height: 24px; margin: 0; }
+/* lectura bajo el cursor: SIEMPRE ocupa su propia línea (flex 100%) con altura fija,
+   esté o no con texto. Así la toolbar no cambia de alto y la gráfica de abajo no salta. */
+.bkpanel .bk-temp-hover { flex: 1 1 100%; min-width: 0; height: 15px; line-height: 15px; margin: 0;
+    font-family: monospace; font-size: 11px; color: #607d8b; text-align: right;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bkpanel .bk-temp-canvas-wrap { flex: 1; min-height: 110px; max-height: 220px; position: relative; }
+.bkpanel #bk_temp_canvas { width: 100%; height: 100%; min-height: 110px; display: block; cursor: crosshair; }
+.bkpanel .bk-temp-result { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; }
+.bkpanel .bk-rate-big { font-size: 18px; font-weight: 700; font-family: monospace; color: #2e7d32; }
+
+/* ===== Babystepping por eje ===== */
+.bkpanel .bk-babyrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.bkpanel .bk-baby-ax { width: 18px; font-weight: 700; font-family: monospace; font-size: 14px; text-align: center; }
+.bkpanel .bk-baby-val { width: 78px; font-family: monospace; font-size: 13px; color: #263238; text-align: right; }
+.bkpanel .bk-babyrow .input-mini { width: 60px; }
+.bkpanel .bk-baby-hint { flex: 1; }
+
+/* sub-plegable dentro de una tarjeta (params M207/M208) */
+.bkpanel details.bk-sub { margin-top: 6px; border-top: 1px solid rgba(127,127,127,0.15); padding-top: 4px; }
+.bkpanel details.bk-sub > summary { cursor: pointer; font-size: 12px; color: #607d8b; list-style: revert; }
+
+/* msl en grid3: ocupa el ancho de su tarjeta */
+.bkpanel .bk-grid3 .bk-msl { border: 0; padding: 0; }
+
+/* ===== Extrusión: columnas FLEXIBLES (responsive, no desbordan) ===== */
+.bkpanel .bk-exgrid { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto minmax(0, 1fr) auto; gap: 5px 6px; align-items: center; margin: 6px 0; }
+.bkpanel .bk-exgrid label { margin: 0; text-align: right; color: #607d8b; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.bkpanel .bk-exgrid input { width: 100%; min-width: 0; box-sizing: border-box; text-align: center; height: 24px; padding: 1px 4px; }
+.bkpanel .bk-exgrid-cold { grid-template-columns: auto auto auto minmax(0, 1fr) auto; }
+.bkpanel .bk-cold-toggle { margin: 0; }
+.bkpanel .bk-unit { color: #90a4ae; font-size: 11px; white-space: nowrap; }
+/* acciones manuales/firmware en 2x2 */
+.bkpanel .bk-btn2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px; }
+.bkpanel .bk-btn2 .btn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* carga/descarga como tabla: botón auto + 3 columnas de input que se encogen */
+.bkpanel .bk-filgrid { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-items: center; margin-top: 8px; }
+.bkpanel .bk-filgrid .btn { white-space: nowrap; padding: 4px 6px; }
+.bkpanel .bk-filgrid input { width: 100%; min-width: 0; box-sizing: border-box; text-align: center; height: 24px; padding: 1px 4px; }
+.bkpanel .bk-fl-hd { text-align: center; color: #90a4ae; font-size: 10px; }
+.bkpanel .bk-fl-dash { text-align: center; color: #cfd6dd; }
+/* offsets en el babystepping: una columna, llena el hueco */
+.bkpanel .bk-baby-offsets { grid-template-columns: 1fr; margin-top: 8px; }
+
+/* babystep: valor proveniente del firmware (real) resaltado en verde */
+.bkpanel .bk-baby-val.bk-baby-fw { color: #2e7d32; }
+
+/* ===== Nivelación: slots de malla + visor topográfico ===== */
+.bkslots-head, .bkmesh-head { display:flex; align-items:center; gap:10px; margin:8px 0 4px; flex-wrap:wrap; }
+.bkslots { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.bkslot { border:1px solid #3a3d44; border-radius:6px; padding:6px; cursor:pointer; text-align:center; background:#23262c; transition:border-color .15s; }
+.bkslot:hover { border-color:#5a90d6; }
+.bkslot-sel { border-color:#4a90d9; box-shadow:0 0 0 1px #4a90d9 inset; }
+.bkslot-idx { font-size:11px; color:#8a8f98; }
+.bkslot-dot { width:12px; height:12px; border-radius:50%; margin:4px auto; }
+.bkslot-filled .bkslot-dot { background:#27ae60; }
+.bkslot-empty .bkslot-dot { background:#555; }
+.bkslot-name { font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bkslot-empty .bkslot-name { color:#8a8f98; font-weight:400; font-style:italic; }
+.bkslot-acts { margin-top:5px; display:flex; gap:3px; justify-content:center; }
+.bkslot-acts .btn-mini { padding:1px 5px; }
+.bkmesh-wrap { width:100%; height:240px; background:#1b1d22; border-radius:6px; overflow:hidden; margin-top:4px; }
+.bkmesh-wrap canvas { width:100%; height:100%; display:block; }
+
+/* ===== Tarjetas de sidebar ===== */
+.bk3d-side-host { width:100%; aspect-ratio:4/3; height:auto; background:#1b1d22; border-radius:6px; overflow:hidden; }
+.bk3d-side-host canvas { width:100%; height:100%; display:block; }
+/* ===== Card de temperatura (sidebar): a juego con el tab Enhanced Controls ===== */
+.bkcard-temp .bkct-item { margin-bottom: 8px; }
+.bkcard-temp .bkct-item:last-of-type { margin-bottom: 4px; }
+.bkcard-temp .bkct-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+.bkcard-temp .bkct-name { font-weight: 600; color: #455a64; font-size: 12px; }
+.bkcard-temp .bkct-live { font-family: ui-monospace, monospace; font-size: 12px; color: #607d8b; white-space: nowrap;
+    min-width: 100px; text-align: right; font-variant-numeric: tabular-nums; }
+.bkcard-temp .bkct-ctl { display: flex; align-items: center; gap: 6px; }
+.bkcard-temp .bkct-slider { flex: 1 1 auto; min-width: 40px; height: 26px; margin: 0; cursor: pointer; accent-color: #e67e22; vertical-align: middle; }
+/* input numérico alineado: border-box + altura fija + sin margen (Bootstrap mete 10px) */
+.bkcard-temp .bkct-num { width: 66px; flex: none; text-align: center; height: 26px; box-sizing: border-box; padding: 2px 6px; margin: 0; font-size: 14px; line-height: 20px; }
+.bkcard-temp .bkct-unit { color: #90a4ae; font-size: 11px; flex: none; }
+.bkcard-temp .bkct-set { flex: none; height: 26px; padding: 0 10px; box-sizing: border-box; }
+.bkcard-temp .bkct-profiles { display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(127,127,127,0.15); }
+.bkcard-temp .bkct-profiles .bkct-cool { margin-left: auto; }
+/* Minijog en formato jogwheel (compacto, unidades 1/10/30) */
+.bkcard-jog .bkmj-svg { width:100%; max-width:230px; height:auto; display:block; margin:0 auto; }
+#bk_minijog .bkmj-seg, #bk_minijog .bkmj-zseg rect, #bk_minijog .bkmj-zseg path {
+    stroke:#888; stroke-width:1; cursor:pointer; transition:fill .1s;
+}
+#bk_minijog .bkmj-seg:hover, #bk_minijog .bkmj-zseg:hover rect, #bk_minijog .bkmj-zseg:hover path { fill:#f0a23a; }
+#bk_minijog .bkmj-home { fill:#dfeee1; stroke:#888; stroke-width:1; cursor:pointer; }
+#bk_minijog .bkmj-home:hover { fill:#f0a23a; }
+#bk_minijog .bkmj-homeicon { fill:#3a6b40; pointer-events:none; }
+#bk_minijog .bkmj-zhome { cursor:pointer; }
+#bk_minijog .bkmj-zhome:hover rect { fill:#f0a23a; }
+#bk_minijog .bkmj-lbl { font:600 12px sans-serif; fill:#333; pointer-events:none; }
+#bk_minijog .bkmj-zlbl { font:600 13px sans-serif; fill:#333; pointer-events:none; }
+#bk_minijog .bkmj-axis { font:700 11px sans-serif; fill:#555; pointer-events:none; }
+.bkcard-jog .bkjc-foot { text-align:center; margin-top:2px; }
+
+/* Label de posición en vivo de los jogwheels */
+.bkw-pos, .bkjc-pos {
+    text-align:center; font:600 12px ui-monospace,monospace; color:#2c3e50;
+    background:#eef1f4; border-radius:5px; padding:3px 6px; margin:4px auto 0; letter-spacing:.3px;
+}
+.bkjc-pos { max-width:230px; }
+
+/* ===== Feed del jog: slider VERTICAL + input (panel) y compacto (card) ===== */
+/* El contenedor #bk_jogwheel ya es flex (regla de .bk-jog-card). El panel de feed va
+   AL LADO de la rueda, angosto; el slider vertical es corto para no alargar la card. */
+.bkw-feed { flex: 0 0 auto; order: 2; display:flex; flex-direction:column; align-items:center; gap:2px; padding:0; }
+.bkw-feed-lbl { font:600 10px sans-serif; color:#607d8b; }
+.bkw-feed-unit { font:600 9px sans-serif; color:#90a4ae; }
+.bkw-feed-z { font:600 10px sans-serif; color:#607d8b; display:flex; align-items:center; gap:2px; margin:0; }
+/* Slider VERTICAL (no existía en el plugin). writing-mode estándar + fallback webkit. */
+.bk-vslider {
+    -webkit-appearance: slider-vertical;
+    writing-mode: vertical-lr; direction: rtl;
+    width:20px; height:120px; margin:0; cursor:pointer; accent-color:#4a90d9;
+}
+.bkw-feednum { width:58px; height:20px; padding:1px 3px; font-size:11px; text-align:right; margin:0; box-sizing:border-box; }
+.bkw-feednum-z { width:48px; }
+
+.bkjc-feed { display:flex; align-items:center; gap:6px; justify-content:center; margin-top:3px; }
+.bkjc-feed input[type=range] { flex:1; min-width:0; max-width:120px; height:16px; accent-color:#4a90d9; cursor:pointer; }
+.bkjc-feednum { width:56px; height:20px; padding:1px 3px; font-size:11px; text-align:right; margin:0; box-sizing:border-box; }
+
+/* Toggle P0 del babystep (cabecera de la card) */
+.bk-baby-p0 { font:600 11px sans-serif; color:#607d8b; margin:0; display:inline-flex; align-items:center; gap:4px; cursor:pointer; }
+.bk-baby-p0 input { margin:0; }
+
+/* ===== Card de Estado (cancel-object / skip-to / capacidades) ===== */
+.bkcard-status .bks-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.bkcard-status .bks-live { justify-content: space-between; }
+.bkcard-status .bks-metric { font-size: 12px; color: #607d8b; }
+.bkcard-status .bks-metric strong { color: #37474f; font-variant-numeric: tabular-nums; }
+.bkcard-status .bks-actions .btn { flex: 1; }
+/* Pausas duales + cancelar: botones uniformes apilados a ancho completo */
+.bkcard-status .bks-pauses { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+.bkcard-status .bks-btn {
+    display: flex; align-items: center; gap: 7px; width: 100%; box-sizing: border-box;
+    height: 30px; padding: 0 10px; font-size: 12px; font-weight: 600;
+    border: 1px solid #cfd8dc; border-radius: 5px; background: #f5f7f9; color: #37474f;
+    cursor: pointer; text-align: left;
+}
+.bkcard-status .bks-btn i { width: 14px; text-align: center; color: #78909c; }
+.bkcard-status .bks-btn:hover:not([disabled]) { background: #eceff1; }
+.bkcard-status .bks-btn[disabled] { opacity: 0.45; cursor: default; }
+.bkcard-status .bks-btn.bks-btn-active { background: #2b6cb0; color: #fff; border-color: #2b6cb0; }
+.bkcard-status .bks-btn.bks-btn-active i { color: #fff; }
+.bkcard-status .bks-btn.bks-btn-danger { color: #b23b3b; }
+.bkcard-status .bks-btn.bks-btn-danger i { color: #c0392b; }
+.bkcard-status .bks-btn.bks-btn-danger:hover:not([disabled]) { background: #fdeaea; }
+.bkcard-status .bks-banner {
+    background: #fff3cd; color: #8a6d3b; border: 1px solid #faebcc;
+    border-radius: 4px; padding: 4px 8px; font-size: 11px; margin-bottom: 6px;
+}
+.bkcard-status .bks-section { margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(127,127,127,0.15); }
+.bkcard-status .bks-title { font-weight: 600; color: #455a64; font-size: 12px; margin-bottom: 4px; }
+.bkcard-status .bks-obj { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.bkcard-status .bks-obj-name {
+    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 12px; color: #37474f;
+}
+.bkcard-status .bks-obj.bks-cancelled .bks-obj-name { text-decoration: line-through; color: #b0bec5; }
+.bkcard-status .bks-obj .btn { flex: none; }
+.bkcard-status .bks-skip { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.bkcard-status .bks-skip-sel { flex: 1; min-width: 120px; margin: 0; height: 26px; }
+.bkcard-status .bks-skip-start { margin: 0; font-size: 11px; }
+.bkcard-status .bks-skip-msg { color: #607d8b; margin-top: 4px; }
+
+/* Numpad-jog: toggle + pista en la card de minijog */
+.bkcard-jog .bkjc-foot { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.bkcard-jog .bkjc-numpad-hint {
+    margin-top: 4px; font-size: 10px; line-height: 1.3; color: #607d8b;
+    background: rgba(76,175,80,0.10); border-radius: 4px; padding: 3px 6px;
+}
+
+/* ===== Panel de Settings: secciones plegables ===== */
+.bkset .bkset-sec { border: 1px solid rgba(127,127,127,0.22); border-radius: 5px; margin-bottom: 8px; padding: 0 10px; }
+.bkset .bkset-sec > summary {
+    cursor: pointer; font-weight: 600; color: #37474f; padding: 8px 4px; list-style: none;
+    user-select: none;
+}
+.bkset .bkset-sec > summary::-webkit-details-marker { display: none; }
+.bkset .bkset-sec > summary::before { content: "\25B8"; color: #90a4ae; margin-right: 8px; display: inline-block; transition: transform .12s; }
+.bkset .bkset-sec[open] > summary::before { transform: rotate(90deg); }
+.bkset .bkset-sec[open] > summary { border-bottom: 1px solid rgba(127,127,127,0.15); margin-bottom: 8px; }
+.bkset .bkset-sec .control-group { margin-bottom: 8px; }
+.bkset .bkset-sec .help-inline { color: var(--bk-ink4); font-size: 11px; }
+.bkset .bkset-sec textarea { font-family: ui-monospace, monospace; font-size: 12px; }
+/* Alineación consistente: mismo ancho/alto de input y unidades centradas con el input */
+.bkset .bkset-sec .controls { line-height: calc(var(--bk-h) + 2px); }
+.bkset .bkset-sec .controls input[type=number] { width: 64px; height: var(--bk-h); box-sizing: border-box; text-align: center; padding: 2px 5px; margin-right: 4px; vertical-align: middle; }
+.bkset .bkset-sec .controls select { height: var(--bk-h); box-sizing: border-box; vertical-align: middle; margin-right: 4px; }
+.bkset .bkset-sec .control-label { color: var(--bk-ink3); }
+
+/* ===== Suite de calibración ===== */
+.bkcalib .bkcal-topbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
+.bkcalib .bkcal-topbar .bkcal-caps { margin:0; flex:1 1 320px; }
+.bkcalib .bkcal-material { display:inline-flex; align-items:center; gap:8px; flex:none; background:#fff3e0; border:1px solid #ffe0b2; border-radius:5px; padding:4px 10px; font-size:12px; color:#8a5a00; white-space:nowrap; }
+.bkcalib .bkcal-material i { color:#e8870b; }
+.bkcalib .bkcal-material label { margin:0; display:inline-flex; align-items:center; gap:4px; font-weight:600; }
+.bkcalib .bkcal-material .input-mini { width:54px; height:24px; box-sizing:border-box; text-align:center; margin:0; }
+.bkcalib .bkcal-caps { background:#eef5fb; border:1px solid #cfe2f3; border-radius:5px; padding:5px 10px; font-size:12px; color:#34607f; margin-bottom:6px; }
+.bkcalib .bkcal-msg { background:#fff8e1; border:1px solid #ffe9a8; border-radius:5px; padding:4px 10px; font-size:12px; color:#8a6d3b; margin-bottom:8px; }
+.bkcalib .bkcal-picker { display:flex; flex-direction:column; gap:4px; }
+.bkcalib .bkcal-test { display:block; width:100%; box-sizing:border-box; text-align:left; font-size:12px; padding:5px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bkcalib .bkcal-test.active { background:#4a90d9; color:#fff; border-color:#3a7bc0; }
+.bkcalib .bkcal-test i { width:16px; text-align:center; color:#90a4ae; }
+.bkcalib .bkcal-test.active i { color:#fff; }
+.bkcalib .bkcal-panel { border-left:1px solid rgba(127,127,127,0.15); padding-left:14px; min-height:200px; }
+/* Altura reservada para título + descripción: así el preview/ecualizador NO se desplazan
+   verticalmente al cambiar de test (descripciones de distinta longitud). */
+.bkcalib .bkcal-panel > h4 { margin:0 0 4px; min-height:1.2em; }
+.bkcalib .bkcal-panel > p.muted { margin:0 0 6px; min-height:5.4em; font-size:12px; line-height:1.35; }
+/* Tabla de parámetros: una fila por param (etiqueta | checkbox variar | valor/rango).
+   Columnas de ancho FIJO (grid) -> nada se desplaza al marcar "variar" o cambiar valores. */
+.bkcalib .bkcal-ptable { margin:6px 0; min-width:0; }
+.bkcalib .bkcal-phead, .bkcalib .bkcal-prow {
+    display:grid; grid-template-columns:120px 48px 1fr; align-items:center; gap:8px; min-height:30px; }
+.bkcalib .bkcal-phead { font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:#90a4ae;
+    border-bottom:1px solid rgba(127,127,127,0.18); padding-bottom:3px; margin-bottom:2px; }
+.bkcalib .bkcal-prow { border-bottom:1px solid rgba(127,127,127,0.08); }
+.bkcalib .bkcal-prow-var { background:#eef5fb; border-radius:4px; }
+.bkcalib .bkcal-plabel { font-size:12px; color:#37474f; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bkcalib .bkcal-plabel small { color:#90a4ae; font-weight:400; margin-left:3px; }
+.bkcalib .bkcal-pvarycol { text-align:center; }
+.bkcalib .bkcal-pvarycol input { margin:0; }
+.bkcalib .bkcal-pvalcol { display:flex; align-items:center; gap:5px; }
+.bkcalib .bkcal-pvalcol .input-mini { width:56px; height:26px; box-sizing:border-box; text-align:center; margin:0; padding:1px 4px; }
+.bkcalib .bkcal-prange { display:inline-flex; align-items:center; gap:4px; }
+.bkcalib .bkcal-psep { color:#b0bec5; }
+.bkcalib .bkcal-pn { font-size:11px; color:#2b6cb0; font-weight:700; min-width:28px; }
+.bkcalib .bkcal-count { margin-top:8px; font-size:12px; color:#455a64; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.bkcalib .bkcal-count i { color:#90a4ae; }
+.bkcalib .bkcal-count strong { font-variant-numeric:tabular-nums; }
+.bkcalib .bkcal-overflow { color:#c0392b; font-weight:600; }
+.bkcalib .bkcal-overflow i { color:#c0392b; }
+.bkcalib .bkcal-presets { display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin:8px 0; padding-top:6px; border-top:1px solid rgba(127,127,127,0.12); }
+.bkcalib .bkcal-preset { display:inline-flex; align-items:center; }
+.bkcalib .bkcal-preset-x { color:#c0392b; margin-left:2px; cursor:pointer; font-weight:700; text-decoration:none; }
+.bkcalib .bkcal-actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+.bkcalib .bkcal-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:8px 0; }
+.bkcalib .bkcal-row label { margin:0; font-size:12px; }
+.bkcalib .bkcal-pid-res { margin-top:8px; background:#eafaf1; border:1px solid #c8e6d4; border-radius:5px; padding:6px 10px; }
+.bkcalib .bkcal-spinner { color:#607d8b; font-size:12px; }
+.bkcalib .bkcal-steps { padding-left:18px; }
+.bkcalib .bkcal-steps li { margin-bottom:8px; }
+/* E-steps: pasos numerados con campos alineados (label arriba / input / unidad) */
+.bkcalib .bkcal-esteps { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+.bkcalib .bkcal-estep { display:flex; gap:10px; align-items:flex-start; }
+.bkcalib .bkcal-estep-n { flex:none; width:22px; height:22px; border-radius:50%; background:#2b6cb0;
+    color:#fff; font-weight:700; font-size:12px; line-height:22px; text-align:center; margin-top:2px; }
+.bkcalib .bkcal-estep-body { display:flex; flex-wrap:wrap; align-items:center; gap:8px; flex:1; min-width:0; }
+.bkcalib .bkcal-estep-txt { flex-basis:100%; font-size:12px; color:#455a64; margin:0; }
+.bkcalib .bkcal-estep-out { font-size:12px; color:#455a64; }
+.bkcalib .bkcal-estep-out strong { font-family:ui-monospace,Menlo,Consolas,monospace; }
+/* Campos label · input · unidad (unidades inline que se alinean y envuelven limpio).
+   Reutilizable en e-steps y PID. */
+.bkcalib .bkcal-fields { display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; margin:2px 0; }
+.bkcalib .bkcal-field { display:inline-flex; flex-direction:row; align-items:center; gap:5px; margin:0; font-size:12px; color:#607d8b; white-space:nowrap; }
+.bkcalib .bkcal-field > span { font-weight:600; }
+.bkcalib .bkcal-field input.input-mini, .bkcalib .bkcal-field select { width:58px; height:26px; box-sizing:border-box; text-align:center; margin:0; padding:1px 4px; }
+.bkcalib .bkcal-field select { width:auto; }
+.bkcalib .bkcal-field small { color:#90a4ae; }
+.bkcalib .bkcal-history { margin-top:14px; padding-top:8px; border-top:1px solid rgba(127,127,127,0.15); }
+.bkcalib .bkcal-htable { width:100%; font-size:12px; }
+.bkcalib .bkcal-htable td { padding:3px 6px; border-bottom:1px solid rgba(127,127,127,0.1); }
+.bkcalib .bkcal-hparams { color:#607d8b; font-family:ui-monospace,monospace; }
+.bkcalib .bkcal-pass { background:rgba(46,204,113,0.10); }
+.bkcalib .bkcal-fail { background:rgba(231,76,60,0.08); }
+.bkcalib .bkcal-mark { cursor:pointer; font-weight:700; text-decoration:none; margin:0 3px; }
+.bkcalib .bkcal-mark.ok { color:#27ae60; }
+.bkcalib .bkcal-mark.no { color:#c0392b; }
+
+/* ===== Terminal mejorado (chat) ===== */
+.bkterm-bar { display:flex; gap:5px; margin-bottom:4px; flex-wrap:wrap; }
+.bkterm-bar .btn.active { background:#4a90d9; color:#fff; }
+/* Desplegable de filtros (arriba). Único sitio de filtros: el nativo de abajo se oculta. */
+.bkterm-fpanel { flex-basis:100%; display:flex; flex-direction:column; gap:3px; background:#f7f9fb; border:1px solid #cfd8dc; border-radius:5px; padding:7px 11px; margin-top:3px; }
+.bkterm-fopt { margin:0; font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer; color:#37474f; }
+.bkterm-fopt input { margin:0; }
+.bkterm-fnote { font-size:11px; color:#90a4ae; }
+/* Altura fija por defecto pero REDIMENSIONABLE por el usuario (resize), persistida.
+   height (no max-height) -> no encoge con pocas líneas. */
+.bkterm { height:350px; min-height:120px; overflow-y:auto; resize:vertical; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; line-height:1.4; padding:8px; background:#1e1e1e; color:#d4d4d4; border-radius:5px; }
+.bkterm .bkt-group { display:flex; flex-direction:column; margin-bottom:6px; }
+/* Comando ENVIADO: burbuja a la DERECHA (chat saliente) */
+.bkterm .bkt-cmd { align-self:flex-end; max-width:80%; background:#2b6cb0; color:#fff; font-weight:600;
+    padding:3px 10px; border-radius:11px 11px 3px 11px; cursor:pointer; word-break:break-word; }
+.bkterm .bkt-cmd:hover { background:#3a7bc0; }
+.bkterm .bkt-cmd.warn { background:#b9770e; }
+.bkterm .bkt-ts { color:rgba(255,255,255,0.65); font-weight:400; font-size:10px; margin-right:5px; }
+/* Respuestas RECIBIDAS: burbujas a la IZQUIERDA (chat entrante) */
+.bkterm .bkt-resp { display:flex; flex-direction:column; align-items:flex-start; margin-top:2px; }
+.bkterm .bkt-line { align-self:flex-start; max-width:88%; background:#2a2d31; color:#c8cdd2;
+    padding:2px 9px; border-radius:11px 11px 11px 3px; margin-top:2px; white-space:pre-wrap; word-break:break-word; }
+.bkterm .bkt-line.warn { background:#5a1f1f; color:#ff8a8a; }
+.bkterm .bkt-group.sys .bkt-line { opacity:0.85; font-style:italic; }
+
+/* ===== Calibración: botones uniformes + preview + editor ===== */
+.bkcalib .bkcal-actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+.bkcalib .bkcal-btn {
+    display:inline-flex; align-items:center; gap:6px; height:30px; box-sizing:border-box;
+    padding:0 12px; font-size:12px; font-weight:600; line-height:28px;
+    border:1px solid #cfd8dc; border-radius:5px; background:#f5f7f9; color:#37474f; cursor:pointer;
+}
+.bkcalib .bkcal-btn i { color:#78909c; }
+.bkcalib .bkcal-btn:hover:not([disabled]) { background:#eceff1; }
+.bkcalib .bkcal-btn[disabled] { opacity:0.45; cursor:default; }
+.bkcalib .bkcal-btn.bkcal-btn-primary { background:#2b6cb0; color:#fff; border-color:#2b6cb0; }
+.bkcalib .bkcal-btn.bkcal-btn-primary i { color:#fff; }
+.bkcalib .bkcal-btn.bkcal-btn-danger { color:#c0392b; }
+.bkcalib .bkcal-btn.bkcal-btn-mini { height:24px; line-height:22px; padding:0 8px; font-weight:400; }
+/* Patrón: ecualizador + preview lado a lado */
+/* Grid: ecualizador (1fr, izquierda) | preview de ancho FIJO (derecha). El preview NO se
+   mueve al cambiar de test (independiente del nº de sliders). */
+.bkcalib .bkcal-pattern { display:grid; grid-template-columns:1fr 212px; gap:16px; align-items:start; }
+.bkcalib .bkcal-pattern .bkcal-eq { margin:0; }
+.bkcalib .bkcal-preview { grid-column:2; position:sticky; top:4px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.bkcalib .bkcal-prev-title { font-size:11px; font-weight:600; color:#607d8b; align-self:flex-start; }
+.bkcalib .bkcal-preview canvas { border:1px solid #cfd8dc; border-radius:5px; background:#fbfcfd; width:200px; height:200px; }
+.bkcalib .bkcal-prev-msg { font-size:11px; color:#90a4ae; text-align:center; min-height:16px; }
+.bkcalib .bkcal-prev-err { color:#c0392b; }
+@media (max-width:820px) { .bkcalib .bkcal-pattern { grid-template-columns:1fr; } .bkcalib .bkcal-preview { grid-column:1; align-items:flex-start; } }
+
+/* ===== Nivelación de cama (sub-herramienta de Calibración) ===== */
+.bkcalib .bklvl-cols { display:grid; grid-template-columns:1.35fr 1fr; gap:16px; align-items:start; margin-top:8px; }
+@media (max-width:820px) { .bkcalib .bklvl-cols { grid-template-columns:1fr; } }
+.bkcalib .bklvl-cvwrap { border:1px solid var(--bk-line); border-radius:var(--bk-r); background:#fbfcfd; padding:6px; }
+.bkcalib .bklvl-cvwrap canvas { display:block; width:100%; height:auto; }
+.bkcalib .bklvl-legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:7px; font-size:11px; color:var(--bk-ink3); }
+.bkcalib .bklvl-legend span { display:inline-flex; align-items:center; gap:6px; }
+.bkcalib .bklvl-sw { width:12px; height:12px; border-radius:3px; display:inline-block; flex:none; box-sizing:border-box; }
+.bkcalib .bklvl-sw.plate { background:rgba(43,108,176,.10); border:1px solid var(--bk-primary); }
+.bkcalib .bklvl-sw.probe { border:2px solid var(--bk-active); border-radius:50%; }
+.bkcalib .bklvl-sw.nin { background:var(--bk-primary); }
+.bkcalib .bklvl-sw.nout { border:1.5px dashed var(--bk-ink4); }
+.bkcalib .bklvl-shead { font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--bk-ink4); font-weight:700; margin:10px 0 6px; border-bottom:1px solid var(--bk-line-soft); padding-bottom:3px; }
+.bkcalib .bklvl-shead small { text-transform:none; letter-spacing:0; font-weight:400; color:var(--bk-ink4); margin-left:6px; }
+.bkcalib .bklvl-run { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:12px 0; padding-top:10px; border-top:1px solid var(--bk-line-soft); }
+.bkcalib .bklvl-badge { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; padding:2px 8px; border-radius:100px; background:var(--bk-caps-bg); color:var(--bk-primary); border:1px solid var(--bk-caps-bd); }
+.bkcalib .bklvl-bar { flex:1; min-width:120px; height:7px; background:#e4e9ec; border-radius:100px; overflow:hidden; }
+.bkcalib .bklvl-bar > i { display:block; height:100%; width:0; background:var(--bk-primary); border-radius:100px; transition:width .3s ease; }
+.bkcalib .bklvl-slots { display:flex; flex-direction:column; gap:6px; }
+.bkcalib .bklvl-slot { display:flex; align-items:center; gap:9px; padding:6px 9px; border:1px solid var(--bk-line); border-radius:var(--bk-r); background:#fff; }
+.bkcalib .bklvl-slot.filled { border-color:var(--bk-caps-bd); background:var(--bk-caps-bg); }
+.bkcalib .bklvl-slot-n { font-weight:700; color:var(--bk-primary); font-size:12px; min-width:22px; }
+.bkcalib .bklvl-slot-name { flex:1; min-width:0; font-size:12px; color:var(--bk-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bkcalib .bklvl-modetoggle { display:flex; gap:6px; margin:0 0 10px; }
+.bkcalib .bklvl-editbtns { display:flex; gap:6px; margin:8px 0; flex-wrap:wrap; }
+.bkcalib .bkcal-prev-err { color:#c0392b; }
+/* Editor de test */
+.bkcalib .bkcal-editor { margin-top:10px; padding:10px; background:#f7f9fb; border:1px solid #cfd8dc; border-radius:5px; }
+.bkcalib .bkcal-ed-row { display:flex; gap:12px; margin-bottom:6px; align-items:center; }
+.bkcalib .bkcal-ed-lbl { display:block; font-size:11px; color:#607d8b; margin:6px 0 2px; }
+.bkcalib .bkcal-ed-lbl code { background:#eceff1; padding:0 3px; border-radius:3px; }
+.bkcalib .bkcal-ed-tpl, .bkcalib .bkcal-ed-params {
+    width:100%; box-sizing:border-box; font-family:ui-monospace,Menlo,Consolas,monospace;
+    font-size:12px; line-height:1.35;
+}
+
+/* ===== Retract inline en la card de estado ===== */
+.bkcard-status .bks-retract {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin: 6px 0 2px; font-size: 11px; color: #607d8b;
+}
+.bkcard-status .bks-retract-lbl { display: inline-flex; align-items: center; gap: 4px; }
+.bkcard-status .bks-retract-lbl i { color: #90a4ae; }
+.bkcard-status .bks-retract-mode { height: 24px; margin: 0; padding: 0 4px; font-size: 11px; }
+.bkcard-status .bks-retract-f { display: inline-flex; align-items: center; gap: 3px; }
+.bkcard-status .bks-retract-f .input-mini { width: 48px; height: 24px; box-sizing: border-box; text-align: center; margin: 0; }
+.bkcard-status .bks-retract-inst { margin: 0; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+.bkcard-status .bks-retract input[disabled] { opacity: 0.45; }
+
+/* ===== Tramado manual (papel) ===== */
+.bkcalib .bktram { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--bk-line-soft); }
+.bkcalib .bktram-panel { margin-top: 10px; }
+.bkcalib .bktram-corners { display: grid; grid-template-columns: repeat(2, minmax(64px, 1fr)); gap: 6px; max-width: 220px; margin-bottom: 8px; }
+.bkcalib .bk-tram-corner { height: 34px; font-weight: 700; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.bkcalib .bk-tram-corner.bk-tram-active { background: var(--bk-active); color: #fff; border-color: var(--bk-primary); box-shadow: 0 0 0 1px var(--bk-active) inset; }
+.bkcalib .bktram-zctrl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.bkcalib .bktram-step { font-size: 12px; color: var(--bk-ink3); font-variant-numeric: tabular-nums; }
+.bkcalib .bktram-zctrl .input-mini { width: 58px; height: 26px; box-sizing: border-box; text-align: center; margin: 0; padding: 1px 4px; }
+.bkcalib .bk-tram-register { margin-left: 4px; }
+.bkcalib .bktram-results { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+.bkcalib .bktram-res { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border: 1px solid var(--bk-line); border-radius: var(--bk-r); background: #fff; font-size: 12px; }
+.bkcalib .bktram-res-label { font-weight: 700; color: var(--bk-ink3); font-family: ui-monospace, Menlo, Consolas, monospace; }
+.bkcalib .bktram-res strong { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--bk-ink); font-variant-numeric: tabular-nums; }
+.bkcalib .bk-tram-status { margin-top: 8px; min-height: 16px; font-size: 12px; color: var(--bk-ink3); }

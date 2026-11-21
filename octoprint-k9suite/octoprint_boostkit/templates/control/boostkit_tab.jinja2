@@ -1,0 +1,403 @@
+{# Panel de control Boost Kit. Contenido del tab propio "Enhanced Controls"
+   (#tab_plugin_boostkit_controls). Tablero organizado por filas:
+   Fila 1: Jog (izq) + Temperatura con gráfica (der)
+   Fila 2: Feedrate + Flowrate + Fan (acceso rápido junto a jog/temp)
+   Fila 3: Extrusión (izq) + Babystepping todos los ejes (der)
+   Luego: ajustes de máquina + secciones avanzadas. #}
+<div id="boostkit_control_panel" class="bkpanel"
+     data-bind="css: { 'bk-hot-active': isPrinting() && hotEnabled(), 'bk-hot-off': isPrinting() && !hotEnabled() }">
+
+    <!-- Barra de estado del tracker -->
+    <div class="bk-topbar">
+        <span class="bk-trackbar muted">Z <strong data-bind="text: tz"></strong> · altura <strong data-bind="text: theight"></strong> · capa <strong data-bind="text: tlayer"></strong> · <span data-bind="text: tmode"></span></span>
+        <span class="bk-hot-badge" data-bind="visible: isPrinting() && hotEnabled(),
+              attr: { title: 'jog convertido a babystep (M290); cambios de M-code aplicados vía hot-tune' }">
+            <i class="fas fa-fire"></i> Hot-tune activo — jog = babystep (M290)
+        </span>
+        <span class="bk-hot-badge bk-hot-off-badge" data-bind="visible: isPrinting() && !hotEnabled(),
+              attr: { title: 'Botones de control deshabilitados durante impresión mientras hot-tune esté apagado' }">
+            <i class="fas fa-ban"></i> Hot-tune OFF — jog/extrude bloqueados
+        </span>
+    </div>
+
+    <!-- ============ FILA 1: JOG (izq) · TEMPERATURA (der) ============ -->
+    <div class="bk-grid2">
+
+        <!-- JOG WHEEL -->
+        <div class="bk-card bk-jog-card">
+            <div class="bk-card-h">Movimiento
+                <span class="bk-help" title="Rueda de jog: cada anillo es un paso (0.1/1/10/100 mm). Las esquinas hacen homing (X, Y, Z y todo). La columna derecha mueve Z. Los movimientos respetan y restauran el modo absoluto/relativo del print.">?</span>
+            </div>
+            {% include "control/boostkit_jogwheel.jinja2" %}
+            <div class="bk-modeinline">
+                <span class="muted small">Ejes</span>
+                <div class="btn-group">
+                    <button class="btn btn-mini" data-bind="click: function(){ setXYZmode(false); }, css: {'btn-primary': absXYZ}">ABS</button>
+                    <button class="btn btn-mini" data-bind="click: function(){ setXYZmode(true); }, css: {'btn-primary': !absXYZ()}">REL</button>
+                </div>
+                <span class="muted small">Extrusor</span>
+                <div class="btn-group">
+                    <button class="btn btn-mini" data-bind="click: function(){ setEmode(false); }, css: {'btn-primary': absE}">ABS</button>
+                    <button class="btn btn-mini" data-bind="click: function(){ setEmode(true); }, css: {'btn-primary': !absE()}">REL</button>
+                </div>
+
+                <button class="btn btn-mini pull-right" data-bind="click: motorsOff" title="Apagar motores (M18)"><i class="fas fa-power-off"></i> Motores</button>
+            </div>
+        </div>
+
+        <!-- TEMPERATURA (set + presets OctoPrint + gráfica + pendiente) -->
+        <div class="bk-card bk-temp-card">
+            <div class="bk-card-h">Temperatura
+                <span class="bk-help" title="Fija objetivos y pulsa Set. Perfiles = los de OctoPrint (Ajustes › Temperaturas). La gráfica: rueda=zoom, arrastrar=desplazar, doble clic=auto. 'Analizar pendiente' (o Shift+arrastrar) selecciona un tramo y calcula la tasa de calentamiento en °C/s.">?</span>
+                <span class="bk-temp-now pull-right">
+                    <span class="bk-chip bk-chip-hot"><i class="fas fa-fire"></i> <strong data-bind="text: hotendActual"></strong>° / <span data-bind="text: hotendTarget"></span>°</span>
+                    <span class="bk-chip bk-chip-bed" data-bind="visible: hasHeatedBed"><i class="fas fa-square"></i> <strong data-bind="text: bedActual"></strong>° / <span data-bind="text: bedTarget"></span>°</span>
+                </span>
+            </div>
+
+            <!-- Un slider por elemento CAPACITADO en el perfil (hotend(s)/cama/cámara).
+                 El tope sale de Ajustes (temp.*_max): Marlin no reporta los *_MAXTEMP. -->
+            <div class="bk-tempctl" data-bind="foreach: tempControls">
+                <div class="bk-tcrow">
+                    <label class="bk-tcname" data-bind="text: label"></label>
+                    <input type="range" class="bk-tsl" min="0"
+                           data-bind="value: set, valueUpdate: 'input', attr: {max: max},
+                                      event: {input: function(){ $parent.onTempInput($data); }, change: function(){ $parent.applyTempControl($data); }}">
+                    <input type="number" class="input-mini bk-tcnum" min="0"
+                           data-bind="value: set, attr: {max: max},
+                                      event: {input: function(){ $parent.markTempEdit($data); }, change: function(){ $parent.applyTempControl($data); }}">
+                    <span class="bk-unit">°C</span>
+                    <button class="btn btn-mini btn-primary" data-bind="click: function(){ $parent.applyTempControl($data); }">Set</button>
+                    <span class="bk-tclive"><strong data-bind="text: actual"></strong>° / <span data-bind="text: target"></span>°</span>
+                </div>
+            </div>
+            <div class="bk-steps bk-temp-presets">
+                <span class="muted small">Perfiles</span>
+                <!-- ko foreach: octoProfiles -->
+                <button class="btn btn-mini" data-bind="text: name, click: function(){ $parent.applyOctoProfile($data); }, attr: {title: 'Hotend ' + extruder + '° · Cama ' + bed + '°'}"></button>
+                <!-- /ko -->
+                <span class="muted small" data-bind="visible: octoProfiles().length === 0">Define perfiles en Ajustes › Temperaturas</span>
+                <button class="btn btn-mini btn-link" data-bind="click: coolDown" title="Apaga hotend y cama"><i class="fas fa-snowflake"></i> Enfriar</button>
+            </div>
+
+            <!-- toolbar gráfica -->
+            <div class="bk-temp-toolbar">
+                <div class="btn-group">
+                    <button class="btn btn-mini" data-bind="click: tToggleLive, css: {'btn-success': tLive}" title="Seguir en vivo"><i class="fas fa-play"></i> <span data-bind="text: tLive() ? 'En vivo' : 'Pausado'"></span></button>
+                    <button class="btn btn-mini" data-bind="click: tResetView" title="Vista automática"><i class="fas fa-expand"></i></button>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-mini" data-bind="click: function(){ analyzeMode(!analyzeMode()); }, css: {'btn-primary': analyzeMode}" title="Arrastra sobre la gráfica para seleccionar un tramo y calcular °C/s"><i class="fas fa-ruler-horizontal"></i> Pendiente</button>
+                    <button class="btn btn-mini" data-bind="click: tClearSel" title="Limpiar selección"><i class="fas fa-times"></i></button>
+                </div>
+                <select class="input-mini bk-temp-series" data-bind="options: seriesList, optionsText: 'label', optionsValue: 'key', value: analyzeSeries"></select>
+                <span class="bk-temp-hover muted small" data-bind="text: tHover"></span>
+            </div>
+
+            <div class="bk-temp-canvas-wrap"><canvas id="bk_temp_canvas"></canvas></div>
+
+            <div class="bk-temp-result" data-bind="visible: tResult">
+                <!-- ko if: tResult() && tResult().ok -->
+                <span class="bk-rate-big" data-bind="text: (tResult() ? (tResult().slope >= 0 ? '+' : '') + tResult().slope.toFixed(3) : '') + ' °C/s'"></span>
+                <span class="muted small" data-bind="text:
+                    'Δ ' + (tResult() ? tResult().dv.toFixed(1) : '') + '° en ' + (tResult() ? tResult().dt.toFixed(1) : '') + 's · ' +
+                    (tResult() ? (tResult().slope * 60).toFixed(1) : '') + ' °C/min · R² ' + (tResult() ? tResult().r2.toFixed(3) : '') +
+                    ' · ' + (tResult() ? tResult().n : '') + ' pts · serie ' + (tResult() ? tResult().key : '')"></span>
+                <!-- /ko -->
+                <!-- ko if: tResult() && !tResult().ok -->
+                <span class="muted small">Selección demasiado corta (mín. 2 puntos).</span>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ FILA 2: FEEDRATE · FLOWRATE · FAN ============ -->
+    <div class="bk-grid3">
+        <!-- FEEDRATE -->
+        <div class="bk-card">
+            <div class="bk-card-h">Velocidad <small class="muted">M220</small>
+                <span class="bk-help" title="Override de velocidad de impresión en vivo, sin re-laminar. Arrastra o usa −/+. ↻ relee del firmware (M503), ↺ resetea a 100%.">?</span>
+            </div>
+            <div class="bk-msl">
+                <div class="bk-msl-val"><span data-bind="text: feedrate() + '%'"></span><small class="bk-msl-max" data-bind="text: 'tope ' + feedMax() + '%'"></small></div>
+                <div class="bk-msl-row">
+                    <button class="btn btn-mini" data-bind="click: function(){ feedNudge(-1); }"><i class="fas fa-minus"></i></button>
+                    <input type="range" class="bk-msl-slider bk-msl-feed" data-bind="value: feedrate, valueUpdate: 'input', attr: {min: sliderFeed().min, max: feedMax, step: sliderFeed().step}">
+                    <button class="btn btn-mini" data-bind="click: function(){ feedNudge(1); }"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="bk-msl-row2">
+                    <button class="btn btn-mini" data-bind="click: syncFromFw" title="Releer del firmware (M503)"><i class="fas fa-sync"></i></button>
+                    <button class="btn btn-mini bk-msl-set" data-bind="click: applyFeedrate"><i class="fas fa-gauge-high"></i> Aplicar</button>
+                    <button class="btn btn-mini" data-bind="click: feedReset" title="Reset 100%"><i class="fas fa-rotate-left"></i></button>
+                </div>
+            </div>
+        </div>
+        <!-- FLOWRATE -->
+        <div class="bk-card">
+            <div class="bk-card-h">Flujo <small class="muted">M221</small>
+                <span class="bk-help" title="Override de flujo de extrusión en vivo. Arrastra o usa −/+. ↻ relee del firmware, ↺ resetea a 100%.">?</span>
+            </div>
+            <div class="bk-msl">
+                <div class="bk-msl-val"><span data-bind="text: flow() + '%'"></span><small class="bk-msl-max" data-bind="text: 'tope ' + flowMax() + '%'"></small></div>
+                <div class="bk-msl-row">
+                    <button class="btn btn-mini" data-bind="click: function(){ flowNudge(-1); }"><i class="fas fa-minus"></i></button>
+                    <input type="range" class="bk-msl-slider bk-msl-flow" data-bind="value: flow, valueUpdate: 'input', attr: {min: sliderFlow().min, max: flowMax, step: sliderFlow().step}">
+                    <button class="btn btn-mini" data-bind="click: function(){ flowNudge(1); }"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="bk-msl-row2">
+                    <button class="btn btn-mini" data-bind="click: syncFromFw" title="Releer del firmware (M503)"><i class="fas fa-sync"></i></button>
+                    <button class="btn btn-mini bk-msl-set" data-bind="click: applyFlow"><i class="fas fa-droplet"></i> Aplicar</button>
+                    <button class="btn btn-mini" data-bind="click: flowReset" title="Reset 100%"><i class="fas fa-rotate-left"></i></button>
+                </div>
+            </div>
+        </div>
+        <!-- VENTILADORES: una tarjeta por ventilador declarado en Ajustes (control.fans) -->
+        <!-- ko foreach: fans -->
+        <div class="bk-card">
+            <div class="bk-card-h"><span data-bind="text: name"></span> <small class="muted" data-bind="text: 'M106' + (index > 0 ? ' P' + index : '')"></small>
+                <span class="bk-help" title="Ventilador (M106/M107). Arrastra o usa −/+. Máx = 100%, apagar = M107.">?</span>
+            </div>
+            <div class="bk-msl">
+                <div class="bk-msl-val" data-bind="text: val() + '%'"></div>
+                <div class="bk-msl-row">
+                    <button class="btn btn-mini" data-bind="click: function(){ $parent.fanCtlNudge($data, -1); }"><i class="fas fa-minus"></i></button>
+                    <input type="range" class="bk-msl-slider bk-msl-fan" data-bind="value: val, valueUpdate: 'input', attr: {min: $parent.sliderFan().min, max: $parent.sliderFan().max, step: $parent.sliderFan().step}">
+                    <button class="btn btn-mini" data-bind="click: function(){ $parent.fanCtlNudge($data, 1); }"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="bk-msl-row2">
+                    <button class="btn btn-mini" data-bind="click: function(){ $parent.fanCtlFull($data); }" title="100%"><i class="fas fa-fan"></i> Máx</button>
+                    <button class="btn btn-mini bk-msl-set" data-bind="click: function(){ $parent.applyFanCtl($data); }"><i class="fas fa-fan"></i> Aplicar</button>
+                    <button class="btn btn-mini" data-bind="click: function(){ $parent.fanCtlOff($data); }" title="Apagar (M107)"><i class="fas fa-power-off"></i></button>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <!-- ============ FILA 3: EXTRUSIÓN (izq) · BABYSTEP ejes (der) ============ -->
+    <div class="bk-grid2">
+
+        <!-- EXTRUSIÓN / FILAMENTO -->
+        <div class="bk-card bk-extrude-card">
+            <div class="bk-card-h">Extrusión / Filamento
+                <span class="bk-help" title="Cantidad (mm) e Extruir/Retraer = extrusión manual. G10/G11 = retracción/recuperación por firmware (parámetros M207/M208 abajo). 'En frío' (M302) permite mover el extrusor sin calentar. Cargar/Descargar usan longitudes largas para cambiar de filamento.">?</span>
+            </div>
+            <!-- cantidad/velocidad (columnas flexibles, se encogen) -->
+            <div class="bk-exgrid">
+                <label>Cantidad</label>
+                <input type="number" data-bind="value: extrudeAmount" title="mm a extruir/retraer">
+                <span class="bk-unit">mm</span>
+                <label>Vel.</label>
+                <input type="number" data-bind="value: extrudeSpeed" title="mm/min">
+                <span class="bk-unit">mm/min</span>
+            </div>
+            <div class="bk-steps">
+                <span class="muted small">Atajos</span>
+                <!-- ko foreach: extrudeAmounts -->
+                <button class="btn btn-mini" data-bind="text: $data + ' mm', click: function(){ $parent.selExtrude($data); }, css: {'btn-primary': $parent.extrudeAmount() == $data}"></button>
+                <!-- /ko -->
+            </div>
+            <!-- acciones manuales y firmware en rejilla 2x2 -->
+            <div class="bk-btn2">
+                <button class="btn" data-bind="click: doRetract" title="Retracción manual"><i class="fas fa-arrow-up"></i> Retraer</button>
+                <button class="btn btn-primary" data-bind="click: doExtrude" title="Extrusión manual"><i class="fas fa-arrow-down"></i> Extruir</button>
+                <button class="btn" data-bind="click: fwRetract" title="Retracción por firmware (G10, usa M207)">G10 Retract</button>
+                <button class="btn" data-bind="click: fwRecover" title="Recuperación por firmware (G11, usa M208)">G11 Recover</button>
+            </div>
+            <!-- en frío -->
+            <div class="bk-exgrid bk-exgrid-cold">
+                <label title="M302: permite extrudir sin alcanzar la temperatura mínima">En frío</label>
+                <div class="btn-group bk-cold-toggle">
+                    <button class="btn btn-mini" data-bind="click: function(){ setColdExtrude(false); }, css: {'btn-primary': !coldAllow()}">Prohibir</button>
+                    <button class="btn btn-mini" data-bind="click: function(){ setColdExtrude(true); }, css: {'btn-primary': coldAllow}">Permitir</button>
+                </div>
+                <label>mín</label>
+                <input type="number" data-bind="value: coldMinTemp" title="Temperatura mínima de extrusión (°C)">
+                <span class="bk-unit">°C</span>
+            </div>
+
+            <!-- carga/descarga como tabla (columnas len/prime/vel se encogen) -->
+            <div class="bk-filgrid">
+                <span></span><span class="bk-fl-hd">len</span><span class="bk-fl-hd">prime</span><span class="bk-fl-hd">vel</span>
+                <button class="btn" data-bind="click: unloadFilament" title="Descargar filamento"><i class="fas fa-eject"></i> Descargar</button>
+                <input type="number" data-bind="value: unloadLen" title="mm">
+                <span class="bk-fl-dash">—</span>
+                <input type="number" data-bind="value: unloadSpeed" title="mm/min">
+                <button class="btn btn-primary" data-bind="click: loadFilament" title="Cargar filamento"><i class="fas fa-download"></i> Cargar</button>
+                <input type="number" data-bind="value: loadLen" title="mm">
+                <input type="number" data-bind="value: loadPrime" title="mm de purga final">
+                <input type="number" data-bind="value: loadSpeed" title="mm/min">
+            </div>
+            <details class="bk-sub">
+                <summary>Parámetros de retract/recover firmware (M207/M208/M209)</summary>
+                <div class="bk-row" style="margin-top:6px">
+                    <span class="muted small" title="M209: convierte las retracciones del gcode en G10/G11 automáticos"><b>Autoretract</b> (M209)</span>
+                    <div class="btn-group">
+                        <button class="btn btn-mini" data-bind="click: function(){ setAutoRetract(false); }, css: {'btn-primary': !autoRetract()}">Desactivar</button>
+                        <button class="btn btn-mini" data-bind="click: function(){ setAutoRetract(true); }, css: {'btn-primary': autoRetract}">Activar</button>
+                    </div>
+                    <span class="muted small" data-bind="text: autoRetract() ? 'G10/G11 automáticos' : 'retracción manual'"></span>
+                </div>
+                <div class="bk-fwgrid" data-bind="foreach: extrusionParams">
+                    <div class="bk-fwcard">
+                        <div class="bk-fwh">
+                            <b data-bind="text: label"></b>
+                            <small class="muted" data-bind="text: code"></small>
+                            <button class="btn btn-mini pull-right" data-bind="click: function(){ $parent.applyParam($data); }">Aplicar</button>
+                            <button class="btn btn-mini btn-link pull-right" data-bind="click: function(){ $parent.resyncParam($data); }" title="Recargar del firmware">↻</button>
+                        </div>
+                        <div class="bk-fwfields" data-bind="foreach: fields">
+                            <span class="bk-fwfield">
+                                <label data-bind="text: label"></label>
+                                <input class="input-mini" data-bind="value: val, attr: {placeholder: (live() == null ? '—' : live())}">
+                                <em class="bk-fwlive" data-bind="text: (live() == null ? '—' : live() + ($parent.unit ? ' ' + $parent.unit : ''))"></em>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- BABYSTEPPING por eje (X/Y/Z) -->
+        <div class="bk-card bk-baby-card">
+            <div class="bk-card-h">Babystepping
+                <span class="bk-help" title="Ajuste fino EN CALIENTE de la posición de cada eje (M290) durante el print, sin parar. Z negativo = boquilla más cerca de la cama. Escribe el incremento y pulsa −/+. El valor mostrado es lo acumulado; ⟲ lo devuelve a 0.">?</span>
+                <label class="bk-baby-p0 pull-right" title="P0 = el M290 NO modifica el offset de la sonda (Probe Z Offset). Actívalo para ajustar la 1ª capa en caliente sin descalibrar la sonda.">
+                    <input type="checkbox" data-bind="checked: babyKeepProbe"> <span>P0 · no tocar sonda</span>
+                </label>
+            </div>
+            <!-- ko foreach: [{ax:'z', name:'Z', hint:'1ª capa / squish'}, {ax:'x', name:'X', hint:'requiere BABYSTEP_XY'}, {ax:'y', name:'Y', hint:'requiere BABYSTEP_XY'}] -->
+            <div class="bk-babyrow">
+                <span class="bk-baby-ax" data-bind="text: name"></span>
+                <span class="bk-baby-val" data-bind="text: $parent.babyDisplay(ax), css: {'bk-baby-fw': $parent.babyAxes[ax].live() != null}" title="valor real del firmware si está disponible"></span>
+                <button class="btn btn-mini" data-bind="click: function(){ $parent.babyAxis(ax, -1); }" title="Restar incremento"><i class="fas fa-minus"></i></button>
+                <input type="number" step="0.005" class="input-mini" data-bind="value: $parent.babyAxes[ax].step" title="Incremento por pulsación (mm)">
+                <button class="btn btn-mini" data-bind="click: function(){ $parent.babyAxis(ax, 1); }" title="Sumar incremento"><i class="fas fa-plus"></i></button>
+                <button class="btn btn-mini btn-link" data-bind="click: function(){ $parent.babyAxisZero(ax); }" title="Volver a 0"><i class="fas fa-rotate-left"></i></button>
+                <span class="muted small bk-baby-hint" data-bind="text: hint"></span>
+            </div>
+            <!-- /ko -->
+            <span class="bk-tip"><i class="fas fa-lightbulb"></i> Guarda el offset ideal con M500 (Ajustes de máquina) para conservarlo.</span>
+
+            <!-- Offsets de sonda (M851) y de origen/cama (M206) -->
+            <div class="bk-fwgrid bk-baby-offsets" data-bind="foreach: babyParams">
+                <div class="bk-fwcard">
+                    <div class="bk-fwh">
+                        <b data-bind="text: label"></b>
+                        <small class="muted" data-bind="text: code"></small>
+                        <button class="btn btn-mini pull-right" data-bind="click: function(){ $parent.applyParam($data); }">Aplicar</button>
+                        <button class="btn btn-mini btn-link pull-right" data-bind="click: function(){ $parent.resyncParam($data); }" title="Recargar del firmware">↻</button>
+                    </div>
+                    <div class="bk-fwfields" data-bind="foreach: fields">
+                        <span class="bk-fwfield">
+                            <label data-bind="text: label"></label>
+                            <input class="input-mini" data-bind="value: val, attr: {placeholder: (live() == null ? '—' : live())}">
+                            <em class="bk-fwlive" data-bind="text: (live() == null ? '—' : live() + ($parent.unit ? ' ' + $parent.unit : ''))"></em>
+                        </span>
+                    </div>
+                    <p class="muted small" data-bind="text: note, visible: note"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ AJUSTES DE MÁQUINA (escaneo + tracking en vivo) ============ -->
+    <details class="bk-card bk-det">
+        <summary>Ajustes de máquina (afectan al movimiento)
+            <span class="bk-help" title="Cada campo muestra el valor REAL del firmware (verde y como placeholder). Escribe y pulsa Aplicar/↵; ↻ recarga del firmware. Escanear lee todo (M503), Guardar lo persiste en EEPROM (M500).">?</span>
+        </summary>
+        <div class="bk-row">
+            <button class="btn btn-mini btn-primary" data-bind="click: scanAll" title="Lee toda la configuración del firmware (M503)"><i class="fas fa-sync"></i> Escanear (M503)</button>
+            <button class="btn btn-mini" data-bind="click: saveAll" title="Persiste los cambios en la EEPROM (M500)"><i class="fas fa-save"></i> Guardar (M500)</button>
+            <span class="muted small">Escaneo al abrir; tracking en vivo durante el print.</span>
+        </div>
+        <span class="bk-tip"><i class="fas fa-circle-info"></i> Verde = valor actual en el firmware. “—” = parámetro que tu firmware no reporta (puedes escribirlo y aplicarlo igual).</span>
+
+        <div class="bk-limgrid">
+            <div><b>Vel. máx (M203)</b> <small class="muted">mm/s</small>
+                X<input class="input-mini" data-bind="value: lim.m203.X"> Y<input class="input-mini" data-bind="value: lim.m203.Y">
+                Z<input class="input-mini" data-bind="value: lim.m203.Z"> E<input class="input-mini" data-bind="value: lim.m203.E">
+                <button class="btn btn-mini" data-bind="click: applyM203">↵</button></div>
+            <div><b>Accel máx (M201)</b> <small class="muted">mm/s²</small>
+                X<input class="input-mini" data-bind="value: lim.m201.X"> Y<input class="input-mini" data-bind="value: lim.m201.Y">
+                Z<input class="input-mini" data-bind="value: lim.m201.Z"> E<input class="input-mini" data-bind="value: lim.m201.E">
+                <button class="btn btn-mini" data-bind="click: applyM201">↵</button></div>
+            <div><b>Accel (M204)</b> <small class="muted">print/retract/travel</small>
+                P<input class="input-mini" data-bind="value: lim.m204.P"> R<input class="input-mini" data-bind="value: lim.m204.R">
+                T<input class="input-mini" data-bind="value: lim.m204.T">
+                <button class="btn btn-mini" data-bind="click: applyM204">↵</button></div>
+            <div><b>Jerk / Junction dev. (M205)</b>
+                X<input class="input-mini" data-bind="value: lim.m205.X" title="jerk X"> Y<input class="input-mini" data-bind="value: lim.m205.Y" title="jerk Y">
+                J<input class="input-mini" data-bind="value: lim.m205.J" title="junction deviation">
+                <button class="btn btn-mini" data-bind="click: applyM205">↵</button></div>
+        </div>
+
+        <div class="bk-fwgrid" data-bind="foreach: machineParams">
+            <div class="bk-fwcard">
+                <div class="bk-fwh">
+                    <b data-bind="text: label"></b>
+                    <small class="muted" data-bind="text: code"></small>
+                    <button class="btn btn-mini pull-right" data-bind="click: function(){ $parent.applyParam($data); }">Aplicar</button>
+                    <button class="btn btn-mini btn-link pull-right" data-bind="click: function(){ $parent.resyncParam($data); }" title="Recargar del firmware">↻</button>
+                </div>
+                <div class="bk-fwfields" data-bind="foreach: fields">
+                    <span class="bk-fwfield">
+                        <label data-bind="text: label"></label>
+                        <input class="input-mini" data-bind="value: val, attr: {placeholder: (live() == null ? '—' : live())}">
+                        <em class="bk-fwlive" data-bind="text: (live() == null ? '—' : live() + ($parent.unit ? ' ' + $parent.unit : ''))"></em>
+                    </span>
+                </div>
+                <p class="muted small" data-bind="text: note, visible: note"></p>
+            </div>
+        </div>
+
+        <div class="bk-fwgrid">
+            <div class="bk-fwcard">
+                <div class="bk-fwh"><b>Input Shaping</b> <small class="muted">M593</small></div>
+                <div class="bk-fwfields">
+                    <span class="bk-fwfield">
+                        <label>X · frec (Hz)</label>
+                        <input class="input-mini" data-bind="value: shaper.X.F, attr: {placeholder: shaper.X.liveF}">
+                        <em class="bk-fwlive" data-bind="text: 'ζ ' + (shaper.X.liveD() == null ? '—' : shaper.X.liveD())"></em>
+                    </span>
+                    <span class="bk-fwfield">
+                        <label>X · amort (ζ)</label>
+                        <input class="input-mini" data-bind="value: shaper.X.D">
+                        <button class="btn btn-mini" data-bind="click: function(){ applyShaper('X'); }">↵ X</button>
+                    </span>
+                    <span class="bk-fwfield">
+                        <label>Y · frec (Hz)</label>
+                        <input class="input-mini" data-bind="value: shaper.Y.F, attr: {placeholder: shaper.Y.liveF}">
+                        <em class="bk-fwlive" data-bind="text: 'ζ ' + (shaper.Y.liveD() == null ? '—' : shaper.Y.liveD())"></em>
+                    </span>
+                    <span class="bk-fwfield">
+                        <label>Y · amort (ζ)</label>
+                        <input class="input-mini" data-bind="value: shaper.Y.D">
+                        <button class="btn btn-mini" data-bind="click: function(){ applyShaper('Y'); }">↵ Y</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <!-- ============ SECCIONES AVANZADAS (plegables) ============ -->
+    <div class="bk-grid2">
+        <!-- La Nivelación de cama se movió a la pestaña "Calibración" (sub-herramienta
+             con mapa de plato, plano/alabeo y slots). Aquí queda solo el Numpad. -->
+
+        <!-- ================= NUMPAD ================= -->
+        <details class="bk-card bk-det">
+            <summary>Numpad (jog por teclado)</summary>
+            <div class="bk-row">
+                <label class="checkbox inline" title="Activa los atajos de teclado numérico para jog/extrusión. Solo si la impresora está operativa y libre (sin imprimir).">
+                    <input type="checkbox" data-bind="checked: numpadJog, enable: !isPrinting()"> Numpad
+                </label>
+                <label class="checkbox inline" title="Modo realtime: movimiento continuo al mantener pulsado (M410 al soltar). Solo ejes + extrusor, sin imprimir.">
+                    <input type="checkbox" data-bind="checked: realtimeJog, enable: !isPrinting()"> Realtime
+                </label>
+            </div>
+            <span class="muted small">8/2/4/6 = Y+/Y-/X-/X+  ·  7/9/1/3 = diagonales  ·  5 = Home XY  ·  +/− = Z  ·  0/. = Extruir/Retraer  ·  Enter = Home todo</span>
+        </details>
+
+    </div>
+</div>

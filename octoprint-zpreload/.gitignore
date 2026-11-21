@@ -1,0 +1,6 @@
+# Artefactos de build de Python (generados al instalar/compilar el plugin)
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/

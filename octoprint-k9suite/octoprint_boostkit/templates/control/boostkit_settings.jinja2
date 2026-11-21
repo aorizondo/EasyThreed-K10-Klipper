@@ -1,0 +1,338 @@
+<div id="settings_plugin_boostkit" class="bkset">
+    <form class="form-horizontal">
+        <!-- Orden por frecuencia de uso: lo más usado arriba, lo experto al final. -->
+
+        <!-- ================= Jog / Extrusión ================= -->
+        <details class="bkset-sec" open>
+            <summary>Jog / Extrusión</summary>
+            <div class="control-group">
+                <label class="control-label">Velocidad jog XY / Z (mm·min⁻¹)</label>
+                <div class="controls">
+                    <input type="number" step="100" class="input-mini" data-bind="value: settings.plugins.boostkit.control.jog_speed_xy"> XY
+                    <input type="number" step="50" class="input-mini" data-bind="value: settings.plugins.boostkit.control.jog_speed_z"> Z
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Velocidad de extrusión (mm·min⁻¹)</label>
+                <div class="controls">
+                    <input type="number" step="50" class="input-small" data-bind="value: settings.plugins.boostkit.control.extrude_speed">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Tope base de sliders (%)</label>
+                <div class="controls">
+                    <input type="number" step="10" class="input-mini" data-bind="value: settings.plugins.boostkit.control.sliders.feed.max"> velocidad
+                    <input type="number" step="10" class="input-mini" data-bind="value: settings.plugins.boostkit.control.sliders.flow.max"> flujo
+                    <input type="number" step="1" min="1" max="50" class="input-mini"
+                           data-bind="value: settings.plugins.boostkit.control.sliders.feed.step"> paso velocidad
+                    <input type="number" step="1" min="1" max="50" class="input-mini"
+                           data-bind="value: settings.plugins.boostkit.control.sliders.flow.step"> paso flujo
+                    <span class="help-inline">Crecen dinámicamente al llegar al tope.</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Cargar / Descargar filamento (mm · vel)</label>
+                <div class="controls">
+                    <input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.control.load.len"> carga
+                    <input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.control.load.speed"> vel
+                    <input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.control.unload.len"> descarga
+                    <input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.control.unload.speed"> vel
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Temperatura ================= -->
+        <details class="bkset-sec">
+            <summary>Temperatura</summary>
+            <div class="control-group">
+                <label class="control-label">Topes de temperatura (°C)</label>
+                <div class="controls">
+                    <input type="number" step="5" class="input-mini" data-bind="value: settings.plugins.boostkit.temp.hotend_max"> hotend
+                    <input type="number" step="5" class="input-mini" data-bind="value: settings.plugins.boostkit.temp.bed_max"> cama
+                    <input type="number" step="5" class="input-mini" data-bind="value: settings.plugins.boostkit.temp.chamber_max"> cámara
+                    <span class="help-inline">Marlin no reporta los *_MAXTEMP por gcode.</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Gráfica: historial / ventana (s)</label>
+                <div class="controls">
+                    <input type="number" step="60" class="input-mini" data-bind="value: settings.plugins.boostkit.temp.history_seconds"> historial
+                    <input type="number" step="10" class="input-mini" data-bind="value: settings.plugins.boostkit.temp.default_window"> ventana
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Babystep · Velocidad · Flujo (pasos) ================= -->
+        <details class="bkset-sec">
+            <summary>Babystep</summary>
+            <div class="control-group">
+                <label class="control-label">Incremento de babystep (mm)</label>
+                <div class="controls">
+                    <input type="number" step="0.005" min="0.005" max="0.5" class="input-small"
+                           data-bind="value: settings.plugins.boostkit.baby_increment">
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Tramado manual (papel) ================= -->
+        <details class="bkset-sec">
+            <summary>Tramado manual (papel)</summary>
+            <div class="control-group">
+                <label class="control-label">Front Left</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.front_left_x"> X
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.front_left_y"> Y
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Front Right</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.front_right_x"> X
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.front_right_y"> Y
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Back Left</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.back_left_x"> X
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.back_left_y"> Y
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Back Right</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.back_right_x"> X
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.back_right_y"> Y
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Center</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.center_x"> X
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.center_y"> Y
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Límites Z (mm)</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.lower_z"> inferior
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.upper_z"> superior
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Feed rate (mm·min⁻¹)</label>
+                <div class="controls">
+                    <input type="number" step="100" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.feed_rate">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Altura de seguridad Z (mm)</label>
+                <div class="controls">
+                    <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.z_clear">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Grosor del papel (mm)</label>
+                <div class="controls">
+                    <input type="number" step="0.01" class="input-mini" data-bind="value: settings.plugins.boostkit.tram.paper_thickness">
+                    <span class="help-inline">Por defecto 0.10 mm.</span>
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Nivelación ================= -->
+        <details class="bkset-sec">
+            <summary>Nivelación automática</summary>
+            <div class="control-group">
+                <label class="control-label">Sistema / Método</label>
+                <div class="controls">
+                    <select data-bind="value: settings.plugins.boostkit.leveling.system">
+                        <option value="ubl">UBL (G29 P1/P3)</option>
+                        <option value="bilinear">Bilineal (G29)</option>
+                    </select>
+                    <select data-bind="value: settings.plugins.boostkit.leveling.method">
+                        <option value="plugin">plugin (G30×N + moda)</option>
+                        <option value="g29">firmware (G29)</option>
+                    </select>
+                    <span class="help-inline">Se prefiere lo auto-detectado del firmware.</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox"><input type="checkbox"
+                        data-bind="checked: settings.plugins.boostkit.leveling.auto_detect">
+                        Auto-detectar cama (M211) y offset de sonda (M851)</label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Puntos N×N / medidas por punto</label>
+                <div class="controls">
+                    <input type="number" step="1" min="3" max="15" class="input-mini"
+                           data-bind="value: settings.plugins.boostkit.leveling.grid_n">
+                    <input type="number" step="1" min="1" max="9" class="input-mini"
+                           data-bind="value: settings.plugins.boostkit.leveling.probe_repeats"> medidas
+                    <span class="help-inline">grid_n debe coincidir con GRID_MAX_POINTS del firmware.</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Inset / Margen / Fade</label>
+                <div class="controls">
+                    <input type="number" step="0.5" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.mesh_inset"> inset
+                    <input type="number" step="0.5" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.probe_margin"> margen
+                    <input type="number" step="1" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.fade"> fade
+                </div>
+            </div>
+            <div class="control-group" data-bind="visible: !settings.plugins.boostkit.leveling.auto_detect()">
+                <label class="control-label">Manual: cama X/Y · offset</label>
+                <div class="controls">
+                    X <input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.bed_min_x">–<input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.bed_max_x">
+                    Y <input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.bed_min_y">–<input type="number" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.bed_max_y">
+                    off <input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.probe_offset_x">/<input type="number" step="0.1" class="input-mini" data-bind="value: settings.plugins.boostkit.leveling.probe_offset_y">
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Numpad jog ================= -->
+        <details class="bkset-sec">
+            <summary>Numpad como jog</summary>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox"><input type="checkbox"
+                        data-bind="checked: settings.plugins.boostkit.numpad.default_on">
+                        Arrancar con el numpad en modo JOG por defecto</label>
+                    <span class="help-block">8/2/4/6 = Y±/X∓ · 7/9/1/3 = diagonales · 5 = Home XY · +/− = Z± · / * = paso · 0/. = extruir/retraer · Shift+Enter = Home all. El on/off se recuerda por navegador.</span>
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Visor 3D ================= -->
+        <details class="bkset-sec">
+            <summary>Visor 3D</summary>
+            <div class="control-group">
+                <label class="control-label">Trazado: nº de movimientos / throttle (s)</label>
+                <div class="controls">
+                    <input type="number" step="50" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.trail_len">
+                    <input type="number" step="0.02" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.push_interval">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Coloreado del trazado</label>
+                <div class="controls">
+                    <select data-bind="value: settings.plugins.boostkit.gcode3d.color_mode">
+                        <option value="type">por tipo (extrusión/travel)</option>
+                        <option value="temp">por temperatura</option>
+                        <option value="speed">por velocidad</option>
+                        <option value="flow">por caudal</option>
+                    </select>
+                    <input type="number" step="5" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.temp_lo"> °C frío
+                    <input type="number" step="5" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.temp_hi"> °C caliente
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox inline"><input type="checkbox" data-bind="checked: settings.plugins.boostkit.gcode3d.show_travel"> travels</label>
+                    <label class="checkbox inline"><input type="checkbox" data-bind="checked: settings.plugins.boostkit.gcode3d.width_by_flow"> ancho ∝ caudal</label>
+                    <label class="checkbox inline"><input type="checkbox" data-bind="checked: settings.plugins.boostkit.gcode3d.follow_cam"> cámara sigue al cabezal</label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Cama</label>
+                <div class="controls">
+                    <label class="checkbox inline"><input type="checkbox" data-bind="checked: settings.plugins.boostkit.gcode3d.show_bed"> dibujar cama</label>
+                    <input type="number" step="1" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.bed_margin"> margen no alcanzable (mm)
+                    <label class="checkbox inline"><input type="checkbox" data-bind="checked: settings.plugins.boostkit.gcode3d.show_bed_mesh"> superponer malla</label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Nozzle / aceleración animación</label>
+                <div class="controls">
+                    <select data-bind="value: settings.plugins.boostkit.gcode3d.nozzle_color">
+                        <option value="bronze">bronce</option>
+                        <option value="steel">acero</option>
+                    </select>
+                    <label class="checkbox inline"><input type="checkbox" data-bind="checked: settings.plugins.boostkit.gcode3d.nozzle_label"> rotular Ø</label>
+                    <input type="number" step="100" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.sim_accel"> mm/s²
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Sincronía de posición</label>
+                <div class="controls">
+                    <input type="number" step="1" min="0" class="input-mini" data-bind="value: settings.plugins.boostkit.gcode3d.auto_report_pos"> auto-report M154 (s, 0=off)
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Hot-tune ================= -->
+        <details class="bkset-sec">
+            <summary>Hot-tune (corrección en caliente)</summary>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox"><input type="checkbox"
+                        data-bind="checked: settings.plugins.boostkit.hottune.enabled">
+                        Activar hot-tune (M410 + reanudación sintética)</label>
+                    <span class="help-block">Cuando está activo, los ajustes enviados desde el panel de control durante una impresión (M220, M221, jog, temperatura…) se aplican AL INSTANTE pausando y sintetizando la reanudación. Desactívalo si tu firmware o tu flujo prefieren cola normal de gcode.</span>
+                </div>
+            </div>
+        </details>
+
+        <!-- ================= Trabajo: cancel-object / skip-to (experto) ================= -->
+        <details class="bkset-sec">
+            <summary>Trabajo (cancel-object · skip-to · cinemática)</summary>
+            <div class="control-group">
+                <label class="control-label">Cinemática / Planar</label>
+                <div class="controls">
+                    <select data-bind="value: settings.plugins.boostkit.job.kinematics">
+                        <option value="auto">auto-detectar</option>
+                        <option value="cartesian">cartesiana</option>
+                        <option value="corexy">CoreXY</option>
+                        <option value="delta">delta</option>
+                        <option value="polar">polar</option>
+                        <option value="robot">brazo robótico</option>
+                    </select>
+                    <select data-bind="value: settings.plugins.boostkit.job.planar">
+                        <option value="auto">planar: auto</option>
+                        <option value="true">planar: sí</option>
+                        <option value="false">planar: no</option>
+                    </select>
+                    <span class="help-inline">No planar / multi-eje desactiva el lift y limita skip-to.</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Aparcado al pausar</label>
+                <div class="controls">
+                    <select data-bind="value: settings.plugins.boostkit.job.park_mode">
+                        <option value="cartesian">cartesiano (lift Z + park XY)</option>
+                        <option value="firmware">firmware (G27 / macro)</option>
+                        <option value="none">ninguno (solo retract)</option>
+                    </select>
+                    <input type="text" class="input-medium" placeholder="macro de park (modo firmware)"
+                           data-bind="value: settings.plugins.boostkit.job.park_gcode">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Cancel-object (M486)</label>
+                <div class="controls">
+                    <select data-bind="value: settings.plugins.boostkit.job.m486">
+                        <option value="auto">auto (según firmware)</option>
+                        <option value="on">forzar M486 nativo</option>
+                        <option value="off">forzar fallback (supresión)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox"><input type="checkbox"
+                        data-bind="checked: settings.plugins.boostkit.job.resume_readback">
+                        Leer pose real (M114) antes de reanudar — corrige la costura</label>
+                    <label class="checkbox"><input type="checkbox"
+                        data-bind="checked: settings.plugins.boostkit.job.skip_home">
+                        Skip-to: re-homear antes de saltar (peligroso en no planar)</label>
+                    <label class="checkbox"><input type="checkbox"
+                        data-bind="checked: settings.plugins.boostkit.job.skip_temp_wait">
+                        Skip-to: NO esperar temperatura (reanudar en caliente)</label>
+                </div>
+            </div>
+        </details>
+
+    </form>
+</div>
