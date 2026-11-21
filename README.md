@@ -1,3 +1,13 @@
+> ## ⚠️ Repo archivado (2026-11-21) — el contenido se ha dividido
+>
+> | Ahora en | Qué |
+> |---|---|
+> | **[aorizondo/EasyThreed-K9-K10](https://github.com/aorizondo/EasyThreed-K9-K10)** | K9 y K10 **de serie**: Marlin K9, Klipper K9, hack USB de la K10 (soldadura, flasheo, CI de `p10_printer.bin`) |
+> | **[aorizondo/frankenprinter](https://github.com/aorizondo/frankenprinter)** | Serie MK (MK3 Marlin, MK4 Klipper con ADXL y homing por choque) + CNC casero y plan K10+CNC |
+> | **[aorizondo/OctoPrint-BoostKit](https://github.com/aorizondo/OctoPrint-BoostKit)** · **[OctoPrint-ZPreload](https://github.com/aorizondo/OctoPrint-ZPreload)** | Plugins de OctoPrint |
+>
+> Este repo queda solo como histórico.
+
 # Frankenprinter — K10 + CNC → impresora/CNC multifunción con Klipper
 
 Proyecto de fusión de una impresora **EasyThreed K10** con un **CNC cartesiano casero**
