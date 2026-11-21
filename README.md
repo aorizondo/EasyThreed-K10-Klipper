@@ -44,6 +44,8 @@ una alternativa pragmática de menor riesgo.
 | [08 Calibración](docs/08-calibracion.md) | rotation_distance, PID, extrusor, input shaping |
 | [09 Sensores y sonda Z](docs/09-sensores-zprobe.md) | BLTouch, inductiva, microswitch, piezo; bed mesh |
 | [10 Reversing pinout K10](docs/10-reversing-pinout-k10.md) | Metodología para mapear los pines del GD32 |
+| [12 MK4 → Klipper](docs/12-mk4-klipper.md) | MK4 (Robin Lite de la K9): migración, ADXL345, input shaper, homing por choque |
+| [13 Manual de uso MK4](docs/13-manual-mk4.md) | Red, homing, calibraciones, imprimir, acelerómetro y problemas frecuentes |
 | [99 BOM, riesgos, troubleshooting](docs/99-bom-riesgos-troubleshooting.md) | Compras, errores comunes y soluciones |
 
 ## Estructura del repo
