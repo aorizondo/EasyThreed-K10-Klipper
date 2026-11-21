@@ -1,0 +1,26 @@
+# ============================================================================
+#  Red de la MK4 — edítalo con la microSD de la Pi en cualquier PC
+#  (partición "bootfs", archivo mk4-red.txt). Se aplica al encender la Pi.
+# ============================================================================
+#
+#  [mk4] pais: código de 2 letras para la Wi-Fi.
+#    NO usar CU: el chip Wi-Fi de la Pi lo rechaza y solo ve los canales 1-11
+#    (un hotspot en el canal 12-13 no aparece). ES permite 1-13.
+#    Si lo cambias, la Pi reinicia sola una vez al arrancar.
+#
+#  Una sección por red: [nombre exacto de la red], respetando mayúsculas.
+#    clave     = contraseña WPA (8-63 caracteres; vacía = red abierta)
+#    prioridad = número; con varias redes a la vista gana la más alta
+#  Las redes que borres de aquí se olvidan en el siguiente arranque.
+#
+#  Sin Wi-Fi: cable Ethernet a un router, o directo al PC con
+#  "conexión compartida" (IPv4 10.42.0.x). Sin DHCP en el cable, la Pi coge
+#  una IP 169.254.x.x igualmente. En todos los casos: ssh antonio@mk4.local
+# ============================================================================
+
+[mk4]
+pais = ES
+
+[Nombre de la red]
+clave = contraseña
+prioridad = 10
