@@ -29,6 +29,13 @@ stl arduino_cnc_enclosure.scad lid  uno_lid.stl
 png arduino_cnc_enclosure.scad assembly uno_assembly.png "0,0,0,55,0,30,300"
 png arduino_cnc_enclosure.scad body     uno_body_top.png "0,0,0,18,0,0,290"
 
+echo "== ADXL345 cabezal K9 (MK4) =="
+stl adxl345_k9_mount.scad base     adxl_base.stl
+stl adxl345_k9_mount.scad lid      adxl_lid.stl
+stl adxl345_k9_mount.scad template adxl_template.stl
+png adxl345_k9_mount.scad assembly adxl_assembly.png "0,0,14,55,0,35,120"
+png adxl345_k9_mount.scad base     adxl_base.png     "0,0,0,40,0,20,95"
+
 echo "== Acople =="
 png coupling_demo.scad "" coupling_demo.png "0,0,0,62,0,28,360"
 

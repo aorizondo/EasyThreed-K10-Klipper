@@ -294,3 +294,44 @@ module port_rect(inner, wall, face, w, h, pos=0, zc=8, fillet=1) {
     if (face=="right")  translate([ il/2+wall/2, pos, zc]) rotate([0,0,90]) slot();
     if (face=="left")   translate([-il/2-wall/2, pos, zc]) rotate([0,0,90]) slot();
 }
+
+
+// ============================================================================
+//  Recorte de puerto en ojo de cerradura (keyhole): base rectangular +
+//  semicírculo arriba, con 2 taladros para tornillos (arriba y abajo).
+//  Útil para jacks DC de panel con brida de montaje.
+//   inner: [il, iw, ih]  face: "front"|"back"|"left"|"right"
+//   w: ancho de la parte rectangular
+//   h: alto de la parte rectangular (sin el semicírculo)
+//   rh: radio del semicírculo superior
+//   pos: desplazamiento a lo largo de la pared
+//   zc: centro en altura (del conjunto)
+//   screw_d: diámetro de los agujeros de tornillo
+//   screw_spacing: separación vertical entre los centros de los tornillos
+// ============================================================================
+module keyhole_port(inner, wall, face, w=10, h=10, rh=5, pos=0, zc=8, screw_d=M3_CLEAR, screw_spacing=16) {
+    il=inner[0]; iw=inner[1];
+    t = wall+2*EPS;
+
+    module keyhole_2d() {
+        union() {
+            translate([0, -h/2, 0]) square([w, h], center=true);
+            translate([0, h/2 - rh, 0]) circle(d=w, $fn=48);
+        }
+    }
+
+    module positioned() {
+        if (face=="front")  translate([pos,  iw/2+wall/2, zc]) rotate([90,0,0]) children();
+        if (face=="back")   translate([pos, -iw/2-wall/2, zc]) rotate([90,0,0]) children();
+        if (face=="right")  translate([ il/2+wall/2, pos, zc]) rotate([0,0,90]) children();
+        if (face=="left")   translate([-il/2-wall/2, pos, zc]) rotate([0,0,90]) children();
+    }
+
+    positioned() {
+        rotate([90,0,0]) linear_extrude(t, center=true) keyhole_2d();
+        for (sz=[-1,1])
+            translate([0, sz*screw_spacing/2, 0])
+                rotate([90,0,0])
+                    cylinder(d=screw_d, h=t, center=true, $fn=32);
+    }
+}
