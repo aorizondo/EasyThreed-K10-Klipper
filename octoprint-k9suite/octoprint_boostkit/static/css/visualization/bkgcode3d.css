@@ -1,0 +1,164 @@
+/* Boost Kit — visor 3D inyectado en el tab GCode Viewer nativo */
+
+.bk3d-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px 0;
+}
+.bk3d-toolbar .btn-group { margin: 0; }
+
+/* controles que solo tienen sentido con el 3D encendido: ocultos por defecto.
+   La barra recibe la clase .bk3d-on desde JS al activar el 3D. */
+.bk3d-when-active { display: none !important; }
+.bk3d-toolbar.bk3d-on .bk3d-when-active { display: inline-flex !important; }
+
+.bk3d-trailctl { align-items: center; gap: 6px; }
+.bk3d-trail-label { font-size: 12px; color: #555; white-space: nowrap; }
+#bk3d_nval { width: 64px; height: 22px; padding: 1px 4px; font-size: 12px; margin: 0; }
+.bk3d-sel { height: 24px; font-size: 12px; padding: 1px 4px; margin: 0; }
+.bk3d-temprange { font-size: 12px; color: #555; white-space: nowrap; }
+.bk3d-temprange input { width: 46px; height: 22px; padding: 1px 3px; font-size: 12px; margin: 0; }
+
+.bk3d-hud {
+    font-size: 12px;
+    color: #37474f;
+    font-family: monospace;
+    margin-left: 6px;
+    align-self: center;
+}
+
+/* Tab propio "Enhanced Viewer": el visor 3D llena la pestaña. El contenedor
+   #bk3d_container lo rellena bkgcode3d.js con el overlay; la toolbar se inserta
+   como hermana justo encima. El GCode Viewer nativo de OctoPrint queda intacto. */
+#bk3d_container {
+    position: relative;
+    width: 100%;            /* usa TODO el ancho de la columna (espacio lateral) */
+    aspect-ratio: 16 / 10;  /* apaisado: la cámara iguala el ancho/alto -> NO deforma */
+    height: auto;
+    max-height: calc(100vh - 200px);  /* tope para no quedar gigantesco en pantallas anchas */
+}
+.bk3d-overlay {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #d9dde2;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f4f5f7;
+}
+.bk3d-overlay > #bk3d_canvas { display: block; width: 100%; height: 100%; }
+
+/* mini-visor 3D del sidebar (tarjeta Gcode): mismo render, sin controles */
+.bk3d-side-canvas {
+    display: block;
+    width: 100%;
+    border: 1px solid #d9dde2;
+    border-radius: 4px;
+    background: #f4f5f7;
+}
+
+/* cubo de navegación (estilo FreeCAD), esquina superior derecha del visor */
+.bk3d-navcube {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 116px;
+    height: 116px;
+    cursor: pointer;
+    z-index: 6;
+}
+
+/* panel de navegación del gcode (capa + punto + info + operaciones) */
+.bk3d-navpanel {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    width: 360px;
+    max-width: calc(100% - 16px);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid #cfd6dd;
+    border-radius: 5px;
+    padding: 6px 8px;
+    z-index: 6;
+    font-size: 12px;
+    color: #37474f;
+}
+/* rodillos de selección fina (estilo candado de combinación) */
+.bk3d-rollers { display: flex; align-items: stretch; gap: 6px; margin-bottom: 5px; }
+.bk3d-roller {
+    width: 56px; border: 1px solid #b0bec5; border-radius: 5px;
+    background: linear-gradient(180deg, #eceff1, #fff 35%, #fff 65%, #eceff1);
+    text-align: center; cursor: ns-resize; user-select: none; padding: 2px 0;
+    box-shadow: inset 0 4px 6px -4px rgba(0,0,0,.25), inset 0 -4px 6px -4px rgba(0,0,0,.25);
+}
+.bk3d-roller:hover { border-color: #4a90d9; }
+.bk3d-rlbl { font-size: 10px; color: #78909c; line-height: 1.1; }
+.bk3d-rval { font-size: 14px; font-weight: bold; font-family: monospace; color: #263238; line-height: 1.2; }
+.bk3d-rhint { font-size: 8px; color: #b0bec5; line-height: 1; }
+.bk3d-rollaux { display: flex; align-items: center; flex: 1; }
+.bk3d-rollaux .btn { white-space: nowrap; }
+
+.bk3d-navrow2 { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.bk3d-navrow2 span { width: 38px; color: #555; }
+.bk3d-navrow2 input[type=range] { flex: 1; }
+.bk3d-navrow2 b { width: 56px; text-align: right; font-family: monospace; }
+.bk3d-navinfo { font-family: monospace; font-size: 11px; line-height: 1.4; margin: 4px 0; color: #455a64; }
+.bk3d-navops { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.bk3d-opslink { font-size: 11px; color: #4a90d9; margin-left: auto; }
+.bk3d-ops { margin-top: 5px; border-top: 1px solid #e0e4e8; padding-top: 5px; }
+.bk3d-oprow { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; flex-wrap: wrap; }
+.bk3d-oprow span { color: #607d8b; font-size: 11px; }
+.bk3d-oprow input { width: 52px; height: 22px; padding: 1px 3px; font-size: 11px; margin: 0; }
+.bk3d-oprow button {
+    height: 24px; padding: 0 7px; font-size: 11px; border: 1px solid #b0bec5;
+    border-radius: 3px; background: #fff; color: #37474f; cursor: pointer;
+}
+.bk3d-oprow button:hover { background: #4a90d9; color: #fff; border-color: #4a90d9; }
+
+/* botones de rotación bajo el cubo (alcanzar caras ocultas) */
+.bk3d-navbtns {
+    position: absolute;
+    top: 122px;
+    right: 8px;
+    width: 116px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 6;
+    user-select: none;
+}
+.bk3d-navbtns .bk3d-navrow { display: flex; gap: 2px; }
+.bk3d-navbtns button {
+    width: 30px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid #b0bec5;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #455a64;
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+}
+.bk3d-navbtns button:hover { background: #4a90d9; color: #fff; border-color: #4a90d9; }
+/* etiqueta de proyección */
+.bk3d-projlabel {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    font: 11px/1.3 monospace;
+    color: #607d8b;
+    background: rgba(255,255,255,0.7);
+    padding: 1px 6px;
+    border-radius: 3px;
+    z-index: 6;
+    pointer-events: none;
+}
+
+/* Slider de rango de capas del modelo (pelar capas) */
+.bk3d-layerctl { align-items: center; gap: 5px; }
+.bk3d-layslider { width: 90px; height: 18px; margin: 0 2px; vertical-align: middle; }

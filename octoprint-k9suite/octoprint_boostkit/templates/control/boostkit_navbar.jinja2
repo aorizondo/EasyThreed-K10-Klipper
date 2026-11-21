@@ -1,0 +1,9 @@
+<div id="navbar_plugin_boostkit" class="navbar-text bk-navbar">
+    <span class="bk-nav-label">Boost Kit</span>
+    <a href="#" class="bk-nav-hot"
+       data-bind="click: toggleHotEnabled, css: { 'bk-hot-on': hotEnabled(), 'bk-hot-off': !hotEnabled() },
+                  attr: { title: hotEnabled() ? 'Hot-tune ACTIVO — clic para desactivar' : 'Hot-tune apagado — clic para activar' }">
+        <i class="fas fa-fire"></i>
+        <span data-bind="text: hotEnabled() ? 'HOT' : 'OFF'"></span>
+    </a>
+</div>

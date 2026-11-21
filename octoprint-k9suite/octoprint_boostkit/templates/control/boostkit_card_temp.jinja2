@@ -1,0 +1,33 @@
+<div id="boostkit_card_temp" class="bkcard-temp">
+    <!-- Sliders por elemento CAPACITADO (a juego con el tab Enhanced Controls).
+         Solo se muestran los elementos del perfil (hotend(s)/cama/cámara). -->
+    <div class="bkct-list" data-bind="foreach: tempControls">
+        <div class="bkct-item">
+            <div class="bkct-head">
+                <span class="bkct-name" data-bind="text: label"></span>
+                <span class="bkct-live"><strong data-bind="text: actual"></strong>° / <span data-bind="text: target"></span>°</span>
+            </div>
+            <div class="bkct-ctl">
+                <input type="range" class="bkct-slider" min="0"
+                       data-bind="value: set, valueUpdate: 'input', attr: {max: max},
+                                  event: {input: function(){ $parent.onTempInput($data); }, change: function(){ $parent.applyTempControl($data); }}">
+                <input type="number" class="bkct-num" min="0"
+                       data-bind="value: set, attr: {max: max},
+                                  event: {input: function(){ $parent.markTempEdit($data); }, change: function(){ $parent.applyTempControl($data); }}">
+                <span class="bkct-unit">°C</span>
+                <button class="btn btn-mini btn-primary bkct-set" data-bind="click: function(){ $parent.applyTempControl($data); }">Set</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Perfiles de temperatura de OctoPrint (Ajustes › Temperaturas) + Enfriar -->
+    <div class="bkct-profiles">
+        <span class="muted small">Perfiles</span>
+        <!-- ko foreach: octoProfiles -->
+        <button class="btn btn-mini" data-bind="text: name, click: function(){ $parent.applyOctoProfile($data); },
+                attr: {title: 'Hotend ' + extruder + '° · Cama ' + bed + '°'}"></button>
+        <!-- /ko -->
+        <span class="muted small" data-bind="visible: octoProfiles().length === 0">Define perfiles en Ajustes › Temperaturas</span>
+        <button class="btn btn-mini btn-link bkct-cool" data-bind="click: coolAll" title="Apaga hotend y cama"><i class="fas fa-snowflake"></i> Enfriar</button>
+    </div>
+</div>

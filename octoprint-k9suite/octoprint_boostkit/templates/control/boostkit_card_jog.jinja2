@@ -1,0 +1,91 @@
+<div id="boostkit_card_jog" class="bkcard-jog">
+    <svg id="bk_minijog" class="bkmj-svg" viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+        <!-- ===== Dial X/Y: 3 anillos (1 interior · 10 medio · 30 exterior) ===== -->
+        <g transform="translate(130,130)">
+            <!-- Anillo 30 (exterior) -->
+            <g fill="#c4c4c4">
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('Y30') }"  d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60.00,-67.07 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('X30') }"  d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('Y-30') }" d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60.00,67.07 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('X-30') }" d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"/>
+            </g>
+            <!-- Anillo 10 (medio) -->
+            <g fill="#d6d6d6">
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('Y10') }"  d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('X10') }"  d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('Y-10') }" d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('X-10') }" d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"/>
+            </g>
+            <!-- Anillo 1 (interior) -->
+            <g fill="#e8e8e8">
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('Y1') }"  d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('X1') }"  d="M35.16 -28.09 L51.13,-44.06 A67.5,67.05 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('Y-1') }" d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"/>
+                <path class="bkmj-seg" data-bind="click: function(){ jogAxesClick('X-1') }" d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.05 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"/>
+            </g>
+            <!-- Home central (G28 todo) -->
+            <circle class="bkmj-home" r="43" cx="0" cy="0" data-bind="click: function(){ jogHomeClick('G28') }"/>
+            <path class="bkmj-homeicon" pointer-events="none" transform="translate(-11,-12) scale(1.1)" d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z"/>
+            <!-- etiquetas de paso (sobre el eje +X) -->
+            <text class="bkmj-lbl" x="50" y="4">1</text>
+            <text class="bkmj-lbl" x="72" y="4">10</text>
+            <text class="bkmj-lbl" x="94" y="4">30</text>
+            <!-- ejes -->
+            <text class="bkmj-axis" x="-5" y="-100">+Y</text>
+            <text class="bkmj-axis" x="-6" y="112">-Y</text>
+            <text class="bkmj-axis" x="-118" y="5">-X</text>
+            <text class="bkmj-axis" x="103" y="5">+X</text>
+        </g>
+
+        <!-- ===== Barra Z (1 · 10 · 30) ===== -->
+        <g transform="translate(255,20)">
+            <g class="bkmj-zseg" data-bind="click: function(){ jogAxesClick('Z30') }">
+                <path d="M5,0 h30 a5,5 0 0,1 5,5 v23 h-40 v-23 a5,5 0 0,1 5,-5 z" fill="#c4c4c4"/>
+                <text class="bkmj-zlbl" x="8" y="20">30</text>
+            </g>
+            <g class="bkmj-zseg" data-bind="click: function(){ jogAxesClick('Z10') }">
+                <rect x="0" y="28" width="40" height="26" fill="#d6d6d6"/>
+                <text class="bkmj-zlbl" x="8" y="47">10</text>
+            </g>
+            <g class="bkmj-zseg" data-bind="click: function(){ jogAxesClick('Z1') }">
+                <rect x="0" y="54" width="40" height="24" fill="#e8e8e8"/>
+                <text class="bkmj-zlbl" x="14" y="71">1</text>
+            </g>
+            <g class="bkmj-zhome" data-bind="click: function(){ jogHomeClick('G28 Z0') }">
+                <rect x="0" y="78" width="40" height="22" fill="#9fc4a4"/>
+                <text class="bkmj-axis" x="13" y="94">Z</text>
+            </g>
+            <g class="bkmj-zseg" data-bind="click: function(){ jogAxesClick('Z-1') }">
+                <rect x="0" y="100" width="40" height="24" fill="#e8e8e8"/>
+            </g>
+            <g class="bkmj-zseg" data-bind="click: function(){ jogAxesClick('Z-10') }">
+                <rect x="0" y="124" width="40" height="26" fill="#d6d6d6"/>
+            </g>
+            <g class="bkmj-zseg" data-bind="click: function(){ jogAxesClick('Z-30') }">
+                <path d="M0,150 h40 v23 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z" fill="#c4c4c4"/>
+            </g>
+        </g>
+    </svg>
+    <div class="bkjc-pos" data-bind="text: posLabel" title="Posición en vivo (reporte del firmware)"></div>
+    <!-- Feed del jog (mm/min): comparte observable con el panel principal (mismo VM). -->
+    <div class="bkjc-feed" title="Velocidad del jog (mm/min). Rango 100–50000.">
+        <i class="fas fa-gauge-high"></i>
+        <input type="range" step="100"
+               data-bind="attr: {min: jogFeedMin, max: jogFeedMax}, value: jogFeedXY, valueUpdate: 'input'">
+        <input type="number" class="bkjc-feednum"
+               data-bind="attr: {min: jogFeedMin, max: jogFeedMax}, value: jogFeedXY, valueUpdate: 'input'">
+        <span class="muted small">mm/min</span>
+    </div>
+    <div class="bkjc-foot">
+        <button class="btn btn-mini btn-link" title="Apagar motores" data-bind="click: motorsOff"><i class="fas fa-power-off"></i> Motores</button>
+        <button class="btn btn-mini" data-bind="click: toggleNumpad, css: { 'btn-success': numpadJog }"
+                title="Numpad como jog: 8/2/4/6=Y±/X∓ · 7/9/1/3=diagonales · 5=Home XY · +/−=Z± · / *=paso · 0=extruir · .=retraer · Shift+Enter=Home all">
+            <i class="fas fa-keyboard"></i>
+            <span data-bind="text: numpadJog() ? 'Numpad: JOG' : 'Numpad: normal'"></span>
+        </button>
+        <span class="bk-step-indicator" data-bind="text: stepLabel, visible: numpadJog()"></span>
+    </div>
+    <div class="bkjc-numpad-hint" data-bind="visible: numpadJog">
+        Numpad en modo JOG. 8/2/4/6 mueve · 7/9/1/3 diagonal · 5 Home XY · +/− Z · / * paso · 0/. extruir/retraer.
+    </div>
+</div>
