@@ -35,3 +35,13 @@ firmware/k10/stock/*.dump
 firmware/k10/stock/disasm.txt
 
 firmware/cnc/build/
+
+# --- Python: cachés y metadatos de instalación editable ---
+__pycache__/
+*.egg-info/
+
+# --- FreeCAD: copias de seguridad automáticas ---
+*.FCBak
+
+# --- Estado de herramientas de agentes (no es parte del proyecto) ---
+.sisyphus/
